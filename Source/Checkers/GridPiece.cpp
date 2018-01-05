@@ -56,33 +56,8 @@ void AGridPiece::Tick(float DeltaTime)
 
 }
 
-void AGridPiece::setTexture(int colour) {
-	switch (colour) {
-		case 0: {
-			gridPiece_->SetMaterial(0, brown_);
-			currentMaterial = 0;
-			break;
-		}
-		case 1: {
-			gridPiece_->SetMaterial(0, lightBrown_);
-			currentMaterial = 1;
-			break;
-		}
-		case 2: {
-			gridPiece_->SetMaterial(0, brownHighlight_);
-			currentMaterial = 2;
-			break;
-		}
-		case 3: {
-			gridPiece_->SetMaterial(0, brownHighlight_);
-			currentMaterial = 3;
-			break;
-		}
-	}
-}
-
-void AGridPiece::setTextureHighlight(bool highlight) {
-
+void AGridPiece::setTextureHighlight(bool highlight)
+{
 	if (highlight) {
 		if (currentMaterial == 0) {
 			setTexture(2);
@@ -96,6 +71,7 @@ void AGridPiece::setTextureHighlight(bool highlight) {
 		}
 		if (currentMaterial == 3) {
 			setTexture(1);
+		}
 	}
 
 }
@@ -106,4 +82,28 @@ void AGridPiece::CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent) {
 }
 
 void AGridPiece::CustomOnEndMouseOver(UPrimitiveComponent* TouchedComponent) {
+}
+
+void AGridPiece::setTexture(int colour) {
+	switch (colour) {
+		case 0: 
+			gridPiece_->SetMaterial(0, brown_);
+			currentMaterial = 0;
+			break;
+		
+		case 1: 
+			gridPiece_->SetMaterial(0, lightBrown_);
+			currentMaterial = 1;
+			break;
+		
+		case 2: 
+			gridPiece_->SetMaterial(0, brownHighlight_);
+			currentMaterial = 2;
+			break;
+		
+		case 3: 
+			gridPiece_->SetMaterial(0, brownHighlight_);
+			currentMaterial = 3;
+			break;
+	}
 }

@@ -29,9 +29,14 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* gridPiece_;
 	
-	void setTexture(int);
+	void setTexture(int tex);
 	void setTextureHighlight(bool highlight);
 
+	UFUNCTION()
+	void CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent);
+
+	UFUNCTION()
+	void CustomOnEndMouseOver(UPrimitiveComponent* TouchedComponent);
 	
 private:
 	UMaterial* brown_;

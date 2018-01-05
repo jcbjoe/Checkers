@@ -19,12 +19,6 @@ public:
 	// Sets default values for this actor's properties
 	ACheckerboardManager();
 
-	UFUNCTION()
-		void CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent);
-
-	UFUNCTION()
-		void CustomOnEndMouseOver(UPrimitiveComponent* TouchedComponent);
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
