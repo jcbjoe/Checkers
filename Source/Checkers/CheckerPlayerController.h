@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
-#include "CheckersGameModeBase.generated.h"
+#include "GameFramework/PlayerController.h"
+#include "CheckerPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CHECKERS_API ACheckersGameModeBase : public AGameModeBase
+class CHECKERS_API ACheckerPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	

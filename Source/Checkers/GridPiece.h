@@ -9,6 +9,9 @@
 #include "Engine.h"
 #include "GridPiece.generated.h"
 
+
+class ACheckerboardManager;
+
 UCLASS()
 class CHECKERS_API AGridPiece : public AActor
 {
@@ -37,6 +40,8 @@ public:
 
 	UFUNCTION()
 	void CustomOnEndMouseOver(UPrimitiveComponent* TouchedComponent);
+
+	void passVariables(int x, int y, int texture, ACheckerboardManager* cbm);
 	
 private:
 	UMaterial* brown_;
@@ -49,5 +54,10 @@ private:
 	void initEvents();
 
 	void initMaterials();
+
+	int x;
+	int y;
+
+	ACheckerboardManager* checkerBoardManager_;
 	
 };

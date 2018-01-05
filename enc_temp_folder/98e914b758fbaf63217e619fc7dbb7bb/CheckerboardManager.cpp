@@ -36,12 +36,10 @@ void ACheckerboardManager::createCheckerboard() {
 	for (int i = 0; i < GRID_SIZE; i++) {
 		for (int j = 0; j < GRID_SIZE; j++) {
 			AGridPiece* gridPiece_ = GetWorld()->SpawnActor<AGridPiece>(FVector(i * 400, j * 400, 0.0), FRotator(0.0, 0.0, 0.0), FActorSpawnParameters());
-			int newX = GRID_SIZE - i - 1;
 			if (colourChanger) 
-				gridPiece_->passVariables(newX, j, 0, this);
+				gridPiece_->passVariables(i, j, 0, this);
 			else
-				gridPiece_->passVariables(newX, j, 1, this);
-			gridPieceArray[newX][j];
+				gridPiece_->passVariables(i, j, 1, this);
 			colourChanger = !colourChanger;
 		}
 		colourChanger = !colourChanger;

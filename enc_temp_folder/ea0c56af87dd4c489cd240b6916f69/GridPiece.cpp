@@ -86,8 +86,6 @@ void AGridPiece::setTextureHighlight(bool highlight)
 }
 
 void AGridPiece::CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent) {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("X:") + FString::FromInt(x));
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Y:") + FString::FromInt(y));
 	setTextureHighlight(true);
 }
 
