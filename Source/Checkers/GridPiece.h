@@ -30,7 +30,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* gridPiece_;
+	UStaticMeshComponent* gridPieceMesh_;
 	
 	void setTexture(int tex);
 	void setTextureHighlight(bool highlight);
@@ -41,13 +41,22 @@ public:
 	UFUNCTION()
 	void CustomOnEndMouseOver(UPrimitiveComponent* TouchedComponent);
 
+	UFUNCTION()
+	void OnClick(UPrimitiveComponent * ClickedComp, FKey ButtonPressed);
+
 	void passVariables(int x, int y, int texture, ACheckerboardManager* cbm);
+
+	void setSelected(bool selected);
+
+	int getX();
+	int getY();
 	
 private:
 	UMaterial* brown_;
 	UMaterial* lightBrown_;
 	UMaterial* brownHighlight_;
 	UMaterial* lightBrownHighlight_;
+	UMaterial* selected_;
 
 	int currentMaterial;
 
@@ -60,4 +69,5 @@ private:
 
 	ACheckerboardManager* checkerBoardManager_;
 	
+	int type;
 };
