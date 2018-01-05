@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GridPiece.h"
-#include "Engine/World.h"
+#include <Runtime/Engine/Classes/Engine/Engine.h>
+#include <EngineGlobals.h>
 #include "CheckerboardManager.generated.h"
 
 
@@ -17,6 +18,12 @@ class CHECKERS_API ACheckerboardManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ACheckerboardManager();
+
+	UFUNCTION()
+		void CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent);
+
+	UFUNCTION()
+		void CustomOnEndMouseOver(UPrimitiveComponent* TouchedComponent);
 
 protected:
 	// Called when the game starts or when spawned

@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine.h"
 #include "GridPiece.generated.h"
 
 UCLASS()
@@ -26,8 +27,22 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* _gridPiece;
+	UStaticMeshComponent* gridPiece_;
+	
+	void setTexture(int);
+	void setTextureHighlight(bool highlight);
 
 	
+private:
+	UMaterial* brown_;
+	UMaterial* lightBrown_;
+	UMaterial* brownHighlight_;
+	UMaterial* lightBrownHighlight_;
+
+	int currentMaterial;
+
+	void initEvents();
+
+	void initMaterials();
 	
 };

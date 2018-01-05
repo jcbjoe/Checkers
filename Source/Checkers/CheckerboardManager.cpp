@@ -17,6 +17,10 @@ void ACheckerboardManager::BeginPlay()
 	Super::BeginPlay();
 
 	createCheckerboard();
+
+	if (GEngine){
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
+	}
 	
 }
 
@@ -28,9 +32,16 @@ void ACheckerboardManager::Tick(float DeltaTime)
 }
 
 void ACheckerboardManager::createCheckerboard() {
+	bool colourChanger = false;
 	for (int i = 0; i < GRID_SIZE; i++) {
 		for (int j = 0; j < GRID_SIZE; j++) {
-			AGridPiece* _gridPiece = GetWorld()->SpawnActor<AGridPiece>(FVector(i * 800, j * 800, 0.0), FRotator(0.0, 0.0, 0.0), FActorSpawnParameters());
+			AGridPiece* _gridPiece = GetWorld()->SpawnActor<AGridPiece>(FVector(i * 400, j * 400, 0.0), FRotator(0.0, 0.0, 0.0), FActorSpawnParameters());
+			if (colourChanger)
+				_gridPiece->setTexture(0);
+			else
+				_gridPiece->setTexture(1);
+			colourChanger = !colourChanger;
 		}
+		colourChanger = !colourChanger;
 	}
 }
