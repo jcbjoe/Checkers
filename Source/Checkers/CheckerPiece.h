@@ -44,8 +44,17 @@ public:
 	int getPlayer();
 
 	bool isKing();
+
+	int getX();
+	int getY();
+
+	void setXY(int, int);
 	
 private:
+
+	UMaterial* player1Material_;
+	UMaterial* player2Material_;
+
 	int x;
 	int y;
 	int player;
@@ -54,5 +63,5 @@ private:
 	ACheckerboardManager* checkerBoardManager_;
 
 	void initEvents();
-
+	void initMaterials();
 };

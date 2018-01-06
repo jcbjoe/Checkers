@@ -130,7 +130,7 @@ void AGridPiece::setTexture(int colour) {
 
 void AGridPiece::OnClick(UPrimitiveComponent * ClickedComp, FKey ButtonPressed) {
 
-	checkerBoardManager_->setSelected(x, y);
+	checkerBoardManager_->onClicked(x, y);
 
 }
 

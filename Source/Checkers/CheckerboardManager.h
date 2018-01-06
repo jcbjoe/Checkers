@@ -32,7 +32,7 @@ public:
 	AGridPiece* getGridPieceAt(int x, int y);
 	ACheckerPiece* getCheckerPieceAt(int x, int y);
 
-	void setSelected(int, int);
+	void onClicked(int, int);
 
 
 private: 
@@ -55,4 +55,12 @@ private:
 	bool hasPieceOnTop(AGridPiece* gridPiece);
 
 	ACheckerPiece* getCheckerPieceOnTop(AGridPiece* gridPiece);
+
+	bool vectorContains(std::vector<AGridPiece*> vectorToSearch, AGridPiece* gridPiece);
+
+	bool pieceMoving;
+
+	AGridPiece* pieceToMoveTo;
+
+	ACheckerPiece* checkerPieceMoving;
 };

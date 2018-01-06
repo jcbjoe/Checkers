@@ -19,6 +19,17 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 
 	initEvents();
 
+	initMaterials();
+
+}
+
+void ACheckerPiece::initMaterials() {
+	ConstructorHelpers::FObjectFinder<UMaterial> player1Mat(TEXT("Material'/Game/Materials/player1.player1'"));
+	player1Material_ = player1Mat.Object;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> player2Mat(TEXT("Material'/Game/Materials/player2.player2'"));
+	player2Material_ = player2Mat.Object;
+
 }
 
 void ACheckerPiece::initEvents() {
@@ -47,7 +58,10 @@ void ACheckerPiece::passVariables(int i, int j, int passedPlayer, ACheckerboardM
 	y = j;
 	player = passedPlayer;
 	checkerBoardManager_ = cbm;
-
+	if (player == 1)
+		checkerPieceMesh_->SetMaterial(0, player1Material_);
+	else
+		checkerPieceMesh_->SetMaterial(0, player2Material_);
 }
 
 void ACheckerPiece::CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent) {
@@ -63,7 +77,7 @@ void ACheckerPiece::CustomOnEndMouseOver(UPrimitiveComponent* TouchedComponent) 
 
 void ACheckerPiece::OnClick(UPrimitiveComponent * ClickedComp, FKey ButtonPressed) {
 
-	checkerBoardManager_->setSelected(x, y);
+	checkerBoardManager_->onClicked(x, y);
 
 }
 
@@ -73,4 +87,17 @@ int ACheckerPiece::getPlayer() {
 
 bool ACheckerPiece::isKing() {
 	return king;
+}
+
+int ACheckerPiece::getX() {
+	return x;
+}
+
+int ACheckerPiece::getY() {
+	return y;
+}
+
+void ACheckerPiece::setXY(int passedX, int passedY) {
+	x = passedX;
+	y = passedY;
 }
