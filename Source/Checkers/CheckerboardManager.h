@@ -12,6 +12,8 @@
 #include "CheckerboardManager.generated.h"
 
 
+class AGameManager;
+
 UCLASS()
 class CHECKERS_API ACheckerboardManager : public AActor
 {
@@ -20,6 +22,8 @@ class CHECKERS_API ACheckerboardManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ACheckerboardManager();
+
+	void initManager(AGameManager* GM);
 
 protected:
 	// Called when the game starts or when spawned
@@ -63,4 +67,7 @@ private:
 	AGridPiece* pieceToMoveTo;
 
 	ACheckerPiece* checkerPieceMoving;
+
+	AGameManager* GameManager;
+
 };

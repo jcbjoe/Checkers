@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CheckerboardManager.h"
+#include "GameManager.h"
 
 
 // Sets default values
@@ -15,14 +16,12 @@ ACheckerboardManager::ACheckerboardManager(): selectedX(0), selectedY(0), pieceM
 void ACheckerboardManager::BeginPlay()
 {
 	Super::BeginPlay();
-
-	createCheckerboard();
-
-	if (GEngine){
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
-	}
-
 	
+}
+
+void ACheckerboardManager::initManager(AGameManager* GM) {
+	createCheckerboard();
+	GameManager = GM;
 }
 
 // Called every frame

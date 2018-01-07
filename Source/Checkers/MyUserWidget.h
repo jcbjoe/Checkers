@@ -18,6 +18,33 @@ public:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
-	FString Test1234;
+	FString Player1Time;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	FString Player2Time;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	FString GlobalTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	FString Player1Score;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	FString Player2Score;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	FString CurrentPlayer;
 	
+	void setPlayer1Time(FString time);
+
+	void setPlayer2Time(FString time);
+
+	void setGlobalTime(FString time);
+
+	void setPlayer1Score(FString time);
+
+	void setPlayer2Score(FString time);
+
+	void setCurrentPlayer(FString time);
+
 };

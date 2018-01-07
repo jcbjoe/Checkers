@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "MyPlayerController.h"
+#include "CheckerboardManager.h"
 #include "GameManager.generated.h"
 
 UCLASS()
@@ -27,6 +29,23 @@ public:
 
 private:
 	int lastSecond;
+
+	AMyPlayerController* getPlayerController();
 	
+	int seconds;
+
+	ACheckerboardManager* checkerBoardManager;
 	
+	void tickTimer();
+
+	int playersTurn;
+
+	void startTurn();
+
+	void endTurn();
+
+	UMyUserWidget* getUI();
+
+	bool playerTimerOn;
+	int playerTimerCurrentSeconds;
 };

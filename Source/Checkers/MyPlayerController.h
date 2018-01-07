@@ -16,9 +16,18 @@ class CHECKERS_API AMyPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	TSubclassOf<class UUserWidget> wMainMenu;
+
+	// Variable to hold the widget After Creating it.
+	UMyUserWidget* MyMainMenu;
+
+	UUserWidget* Editor;
+
 	virtual void BeginPlay();
 
-	UMyUserWidget* UserInterface;
+	UMyUserWidget* getHudWidget();
 	
 	
 };
