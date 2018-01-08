@@ -52,7 +52,7 @@ private:
 	
 	void showPossibleMoves(int player, bool isKing);
 
-	std::vector<AGridPiece*> possibleMoveGridPieces;
+	std::vector<std::vector<AGridPiece*>> possibleMoveGridPieces;
 
 	void removePossibleMoves();
 
@@ -60,7 +60,7 @@ private:
 
 	ACheckerPiece* getCheckerPieceOnTop(AGridPiece* gridPiece);
 
-	bool vectorContains(std::vector<AGridPiece*> vectorToSearch, AGridPiece* gridPiece);
+	bool possibleMovesContains(AGridPiece* gridPiece);
 
 	bool pieceMoving;
 
@@ -69,5 +69,13 @@ private:
 	ACheckerPiece* checkerPieceMoving;
 
 	AGameManager* GameManager;
+
+	ACheckerPiece* proposedPieceToTake;
+
+	bool canTakePiece(AGridPiece* gridPiece);
+
+	ACheckerPiece* getPieceTaking(AGridPiece* gridPiece);
+
+	void takePiece(ACheckerPiece* checkerPiece);
 
 };

@@ -11,7 +11,7 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 	PrimaryActorTick.bCanEverTick = true;
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Piece.Piece'"));
-	checkerPieceMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("GridMesh"));
+	checkerPieceMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("BasePieceMesh"));
 
 	checkerPieceMesh_->SetStaticMesh(gridMesh.Object);
 
@@ -67,12 +67,12 @@ void ACheckerPiece::passVariables(int i, int j, int passedPlayer, ACheckerboardM
 void ACheckerPiece::CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent) {
 	AGridPiece* gridPiece = checkerBoardManager_->getGridPieceAt(x, y);
 	if (gridPiece != nullptr) {
-		gridPiece->setTextureHighlight(true);
+		gridPiece->setHighlighted(true);
 	}
 }
 
 void ACheckerPiece::CustomOnEndMouseOver(UPrimitiveComponent* TouchedComponent) {
-	checkerBoardManager_->getGridPieceAt(x, y)->setTextureHighlight(false);
+	checkerBoardManager_->getGridPieceAt(x, y)->setHighlighted(false);
 }
 
 void ACheckerPiece::OnClick(UPrimitiveComponent * ClickedComp, FKey ButtonPressed) {
@@ -100,4 +100,9 @@ int ACheckerPiece::getY() {
 void ACheckerPiece::setXY(int passedX, int passedY) {
 	x = passedX;
 	y = passedY;
+}
+
+void ACheckerPiece::makeKing() {
+	king = true;
+	checkerPieceKingMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("KingMesh"));
 }

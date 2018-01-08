@@ -6,7 +6,7 @@
 
 
 // Sets default values
-AGridPiece::AGridPiece(): x(0), y(0), type(0)
+AGridPiece::AGridPiece(): x(0), y(0), type(0), highlighted(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -70,6 +70,11 @@ void AGridPiece::Tick(float DeltaTime)
 
 }
 
+void AGridPiece::setHighlighted(bool highlight) {
+	highlighted = highlight;
+	setTextureHighlight(highlighted);
+}
+
 void AGridPiece::setTextureHighlight(bool highlight)
 {
 	if (highlight) {
@@ -91,13 +96,12 @@ void AGridPiece::setTextureHighlight(bool highlight)
 }
 
 void AGridPiece::CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent) {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("X:") + FString::FromInt(x));
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Y:") + FString::FromInt(y));
 	setTextureHighlight(true);
 }
 
 void AGridPiece::CustomOnEndMouseOver(UPrimitiveComponent* TouchedComponent) {
-	setTextureHighlight(false);
+	if(!highlighted)
+		setTextureHighlight(false);
 }
 
 void AGridPiece::setTexture(int colour) {
@@ -137,8 +141,9 @@ void AGridPiece::OnClick(UPrimitiveComponent * ClickedComp, FKey ButtonPressed) 
 void AGridPiece::setSelected(bool selected) {
 	if (selected) {
 		setTexture(4);
-	} else
+	} else {
 		setTexture(type);
+	}
 }
 
 int AGridPiece::getX() {

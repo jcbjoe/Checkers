@@ -33,7 +33,7 @@ public:
 	UStaticMeshComponent* gridPieceMesh_;
 	
 	void setTexture(int tex);
-	void setTextureHighlight(bool highlight);
+	void setHighlighted(bool highlight);
 
 	UFUNCTION()
 	void CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent);
@@ -68,6 +68,8 @@ private:
 	int y;
 
 	ACheckerboardManager* checkerBoardManager_;
-	
+	void setTextureHighlight(bool highlight);
 	int type;
+
+	bool highlighted;
 };

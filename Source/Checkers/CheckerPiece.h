@@ -21,6 +21,7 @@ public:
 	ACheckerPiece();
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* checkerPieceMesh_;
+	UStaticMeshComponent* checkerPieceKingMesh_;
 
 protected:
 	// Called when the game starts or when spawned
@@ -50,6 +51,8 @@ public:
 
 	void setXY(int, int);
 	
+	void makeKing();
+
 private:
 
 	UMaterial* player1Material_;

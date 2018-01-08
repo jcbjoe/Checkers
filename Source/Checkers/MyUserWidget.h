@@ -34,6 +34,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
 	FString CurrentPlayer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	FString AlertMessage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	int delayTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	bool showAlertMessage;
 	
 	void setPlayer1Time(FString time);
 
@@ -46,5 +55,7 @@ public:
 	void setPlayer2Score(FString time);
 
 	void setCurrentPlayer(FString time);
+
+	void setAlertMessage(FString message, int displayTime);
 
 };
