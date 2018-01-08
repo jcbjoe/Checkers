@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+q// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GameManager.h"
 #include "Blueprint/UserWidget.h"

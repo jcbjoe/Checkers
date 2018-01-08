@@ -95,7 +95,7 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void APlayerPawn::RotateRight() {
 	if (!cameraMoving) {
-		cameraInput = 1;
+		cameraInput = -1;
 		cameraMoving = true;
 		count = 0;
 	}
@@ -103,7 +103,7 @@ void APlayerPawn::RotateRight() {
 
 void APlayerPawn::RotateLeft() {
 	if (!cameraMoving) {
-		cameraInput = -1;
+		cameraInput = 1;
 		cameraMoving = true;
 		count = 0;
 	}
