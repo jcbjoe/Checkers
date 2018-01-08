@@ -66,22 +66,23 @@ ACheckerPiece* ACheckerboardManager::getCheckerPieceAt(int x, int y) {
 
 void ACheckerboardManager::onClicked(int x, int y) {
 	if (!pieceMoving) {
-
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test"));
 		//--- Get old selected grid piece and unselect it.
 		AGridPiece* oldSelectedCheckerPiece = getGridPieceAt(selectedX, selectedY);
 		//--- Grab new selected grid piece
 		AGridPiece* newSelected = getGridPieceAt(x, y);
-
+		GameManager->getUI()->setAlertMessage(FString("X: ") + FString::FromInt(x) + FString("y:") + FString::FromInt(y), 5);
 		if (hasPieceOnTop(newSelected)) {
-
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test2"));
 			//--- Grab our new checker piece
 			ACheckerPiece* checkerPiece = getCheckerPieceAt(x, y);
 
 			if (checkerPiece->getPlayer() != GameManager->getCurrentPlayer()) {
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test3"));
 				//Display Message saying not piece
 				GameManager->getUI()->setAlertMessage(FString("This is not your piece!"), 5);
 			} else {
-
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test4"));
 				oldSelectedCheckerPiece->setSelected(false);
 
 				//--- Change selected vars
@@ -117,8 +118,22 @@ void ACheckerboardManager::onClicked(int x, int y) {
 
 					removePossibleMoves();
 					
+					if (!checkerPieceMoving->isKing()) {
+						int player = checkerPieceMoving->getPlayer();
+						//--- Moving Right
+						if (player == 0) {
+							if (checkerPieceMoving->getX() == 0) {
+								checkerPieceMoving->makeKing();
+							}
+						}
+						//--- Moving Left
+						if (player == 1) {
+							if (checkerPieceMoving->getX() == (GRID_SIZE - 1)) {
+								checkerPieceMoving->makeKing();
+							}
+						}
+					}
 				}
-
 			}
 		}
 	}
