@@ -5,7 +5,7 @@
 
 
 // Sets default values
-ACheckerboardManager::ACheckerboardManager(): selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr)
+ACheckerboardManager::ACheckerboardManager(): selectedX(0), selectedY(0), pieceMoving(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -66,74 +66,39 @@ ACheckerPiece* ACheckerboardManager::getCheckerPieceAt(int x, int y) {
 
 void ACheckerboardManager::onClicked(int x, int y) {
 	if (!pieceMoving) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test"));
 		//--- Get old selected grid piece and unselect it.
 		AGridPiece* oldSelectedCheckerPiece = getGridPieceAt(selectedX, selectedY);
+		oldSelectedCheckerPiece->setSelected(false);
+
+		//--- Change selected vars
+		selectedX = x;
+		selectedY = y;
+
 		//--- Grab new selected grid piece
-		AGridPiece* newSelected = getGridPieceAt(x, y);
-		GameManager->getUI()->setAlertMessage(FString("X: ") + FString::FromInt(x) + FString("y:") + FString::FromInt(y), 5);
+		AGridPiece* newSelected = getGridPieceAt(selectedX, selectedY);
+		//--- Grab our new checker piece
+		ACheckerPiece* checkerPiece = getCheckerPieceAt(selectedX, selectedY);
 		if (hasPieceOnTop(newSelected)) {
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test2"));
-			//--- Grab our new checker piece
-			ACheckerPiece* checkerPiece = getCheckerPieceAt(x, y);
-
-			if (checkerPiece->getPlayer() != GameManager->getCurrentPlayer()) {
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test3"));
-				//Display Message saying not piece
-				GameManager->getUI()->setAlertMessage(FString("This is not your piece!"), 5);
-			} else {
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test4"));
-				oldSelectedCheckerPiece->setSelected(false);
-
-				//--- Change selected vars
-				selectedX = x;
-				selectedY = y;
-
-				//--- Remove old possible moves
-				removePossibleMoves();
-				//--- If there is a checker piece on top of the grid piece we have selected, remember you can select a grid piece by clicking the checker pawn too
-				newSelected->setSelected(true);
-				//--- Grab side and if they are a king
-				int player = checkerPiece->getPlayer();
-				bool isKing = checkerPiece->isKing();
-				//--- Show the possible moves the player can make
-				showPossibleMoves(player, isKing);
-			}
-		} else {
-			if (possibleMovesContains(newSelected)) {
+			//--- Remove old possible moves
+			removePossibleMoves();
+			//--- If there is a checker piece on top of the grid piece we have selected, remember you can select a grid piece by clicking the checker pawn too
+			newSelected->setSelected(true);
+			//--- Grab side and if they are a king
+			int player = checkerPiece->getPlayer();
+			bool isKing = checkerPiece->isKing();
+			//--- Show the possible moves the player can make
+			showPossibleMoves(player, isKing);
+		}
+		else {
+			if (vectorContains(possibleMoveGridPieces, newSelected)) {
 				//--- Move Piece
 				if (!pieceMoving) {
-					oldSelectedCheckerPiece->setSelected(false);
 					checkerPieceMoving = getCheckerPieceOnTop(oldSelectedCheckerPiece);
 					pieceToMoveTo = newSelected;
 					pieceMoving = true;
-
-					if (canTakePiece(newSelected)) {
-						ACheckerPiece* pieceToTake = getPieceTaking(newSelected);
-						GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test"));
-						takePiece(pieceToTake);
-					} else {
-						GameManager->endTurn();
-					}
-
 					removePossibleMoves();
-					
-					if (!checkerPieceMoving->isKing()) {
-						int player = checkerPieceMoving->getPlayer();
-						//--- Moving Right
-						if (player == 0) {
-							if (checkerPieceMoving->getX() == 0) {
-								checkerPieceMoving->makeKing();
-							}
-						}
-						//--- Moving Left
-						if (player == 1) {
-							if (checkerPieceMoving->getX() == (GRID_SIZE - 1)) {
-								checkerPieceMoving->makeKing();
-							}
-						}
-					}
 				}
+
 			}
 		}
 	}
@@ -166,15 +131,15 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 
 							//--- Is there a piece there?
 							if (!hasPieceOnTop(JumpOverMove)) {
-								JumpOverMove->setHighlighted(true);
-								possibleMoveGridPieces.push_back({ JumpOverMove, leftBottom });
+								JumpOverMove->setTextureHighlight(true);
+								possibleMoveGridPieces.push_back(JumpOverMove);
 							}
 						}
 					}
 				} else {
 					//--- If no piece on top just normally highlight
-					leftBottom->setHighlighted(true);
-					possibleMoveGridPieces.push_back({ leftBottom, nullptr });
+					leftBottom->setTextureHighlight(true);
+					possibleMoveGridPieces.push_back(leftBottom);
 				}
 			}
 			//--- This is the TOP highlight
@@ -198,15 +163,15 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 
 							//--- Is there a piece there?
 							if (!hasPieceOnTop(JumpOverMove)) {
-								JumpOverMove->setHighlighted(true);
-								possibleMoveGridPieces.push_back({ JumpOverMove, leftTop });
+								JumpOverMove->setTextureHighlight(true);
+								possibleMoveGridPieces.push_back(JumpOverMove);
 							}
 						}
 					}
 				} else {
 					//--- If no piece on top just normally highlight
-					leftTop->setHighlighted(true);
-					possibleMoveGridPieces.push_back({ leftTop, nullptr });
+					leftTop->setTextureHighlight(true);
+					possibleMoveGridPieces.push_back(leftTop);
 				}
 			}
 		} else {
@@ -229,42 +194,46 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 
 							//--- Is there a piece there?
 							if (!hasPieceOnTop(JumpOverMove)) {
-								JumpOverMove->setHighlighted(true);
-								possibleMoveGridPieces.push_back({ JumpOverMove, rightBottom });
+								JumpOverMove->setTextureHighlight(true);
+								possibleMoveGridPieces.push_back(JumpOverMove);
 							}
 						}
 					}
 				} else {
 					//--- If no piece on top just normally highlight
-					rightBottom->setHighlighted(true);
-					possibleMoveGridPieces.push_back({ rightBottom, nullptr });
+					rightBottom->setTextureHighlight(true);
+					possibleMoveGridPieces.push_back(rightBottom);
 				}
 			}
 			if (!(selectedY == (GRID_SIZE - 1))) {
 				//--- This is the TOP highlight
 				AGridPiece* rightTop = getGridPieceAt(selectedX + 1, selectedY + 1);
 				if (hasPieceOnTop(rightTop)) {
+					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test1!"));
 					if (getCheckerPieceOnTop(rightTop)->getPlayer() != player) {
+						GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test2!"));
 						//--- Work out jump over position
 						int JumpOverX = selectedX + 2;
 						int JumpoverY = selectedY + 2;
 
 						//--- Make sure our Y is not off the top of the board
 						if (JumpoverY <= (GRID_SIZE - 1)) {
+							GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test3!"));
 
 							AGridPiece* JumpOverMove = getGridPieceAt(JumpOverX, JumpoverY);
 
 							//--- Is there a piece there?
 							if (!hasPieceOnTop(JumpOverMove)) {
-								JumpOverMove->setHighlighted(true);
-								possibleMoveGridPieces.push_back({ JumpOverMove, rightTop });
+								GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Test4!"));
+								JumpOverMove->setTextureHighlight(true);
+								possibleMoveGridPieces.push_back(JumpOverMove);
 							}
 						}
 					}
 				} else {
 					//--- If no piece on top just normally highlight
-					rightTop->setHighlighted(true);
-					possibleMoveGridPieces.push_back({ rightTop, nullptr });
+					rightTop->setTextureHighlight(true);
+					possibleMoveGridPieces.push_back(rightTop);
 				}
 			}
 		}
@@ -272,8 +241,8 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 }
 
 void ACheckerboardManager::removePossibleMoves() {
-	for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
-		gridPieceVector[0]->setHighlighted(false);
+	for (AGridPiece* gridPiece : possibleMoveGridPieces) {
+		gridPiece->setTextureHighlight(false);
 	}
 	possibleMoveGridPieces.clear();
 }
@@ -330,46 +299,12 @@ ACheckerPiece* ACheckerboardManager::getCheckerPieceOnTop(AGridPiece* gridPiece)
 	return checkerPieceArray[x][y];
 }
 
-bool ACheckerboardManager::possibleMovesContains(AGridPiece* gridPiece) {
+bool ACheckerboardManager::vectorContains(std::vector<AGridPiece*> vectorToSearch, AGridPiece* gridPiece) {
 	bool found = false;
-
-	for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
-		if (gridPieceVector[0] == gridPiece) {
+	for (AGridPiece* gridPieceInLoop : vectorToSearch) {
+		if (gridPieceInLoop == gridPiece)
 			found = true;
-		}
 	}
 
 	return found;
-}
-
-bool ACheckerboardManager::canTakePiece(AGridPiece* gridPiece) {
-	bool canTake = false;
-	for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
-		if (gridPieceVector[0] == gridPiece) {
-			if (gridPieceVector[1] != nullptr) {
-				canTake = true;
-			}
-		}
-	}
-
-	return canTake;
-}
-
-ACheckerPiece* ACheckerboardManager::getPieceTaking(AGridPiece* gridPiece) {
-	ACheckerPiece* pieceInMiddle = nullptr;
-	for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
-		if (gridPieceVector[0] == gridPiece) {
-			pieceInMiddle = getCheckerPieceOnTop(gridPieceVector[1]);
-		}
-	}
-
-	
-	return pieceInMiddle;
-}
-
-void ACheckerboardManager::takePiece(ACheckerPiece* checkerPiece) {
-	int x = checkerPiece->getX();
-	int y = checkerPiece->getY();
-	checkerPieceArray[x][y] = nullptr;
-	checkerPiece->Destroy();
 }

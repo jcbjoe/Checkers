@@ -27,12 +27,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	int getCurrentPlayer();
-
-	UMyUserWidget* getUI();
-
-	void endTurn();
-
 private:
 	int lastSecond;
 
@@ -47,6 +41,10 @@ private:
 	int playersTurn;
 
 	void startTurn();
+
+	void endTurn();
+
+	UMyUserWidget* getUI();
 
 	bool playerTimerOn;
 	int playerTimerCurrentSeconds;
