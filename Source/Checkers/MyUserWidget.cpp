@@ -31,3 +31,13 @@ void UMyUserWidget::setPlayer2Score(FString time) {
 void UMyUserWidget::setCurrentPlayer(FString time) {
 	CurrentPlayer = time;
 }
+
+void UMyUserWidget::setAlertMessage(FString message, int displayTime) {
+
+	AlertMessage = message;
+
+	delayTime = displayTime;
+
+	showAlertMessage = true;
+
+}

@@ -90,3 +90,7 @@ void AGameManager::endTurn() {
 	}
 	startTurn();
 }
+
+int AGameManager::getCurrentPlayer() {
+	return playersTurn;
+}

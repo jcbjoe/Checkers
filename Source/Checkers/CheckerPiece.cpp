@@ -67,12 +67,12 @@ void ACheckerPiece::passVariables(int i, int j, int passedPlayer, ACheckerboardM
 void ACheckerPiece::CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent) {
 	AGridPiece* gridPiece = checkerBoardManager_->getGridPieceAt(x, y);
 	if (gridPiece != nullptr) {
-		gridPiece->setTextureHighlight(true);
+		gridPiece->setHighlighted(true);
 	}
 }
 
 void ACheckerPiece::CustomOnEndMouseOver(UPrimitiveComponent* TouchedComponent) {
-	checkerBoardManager_->getGridPieceAt(x, y)->setTextureHighlight(false);
+	checkerBoardManager_->getGridPieceAt(x, y)->setHighlighted(false);
 }
 
 void ACheckerPiece::OnClick(UPrimitiveComponent * ClickedComp, FKey ButtonPressed) {
