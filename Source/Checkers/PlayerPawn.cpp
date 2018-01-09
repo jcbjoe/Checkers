@@ -68,7 +68,8 @@ void APlayerPawn::BeginPlay()
 
 	this->SetActorLocationAndRotation(startLocation, Rotation);
 	
-	attachPoint_->SetRelativeLocationAndRotation(FVector(120.f, -40.f, -53.f), FRotator(0.0f, 90.0f, 0.0f));
+	//attachPoint_->SetRelativeLocationAndRotation(FVector(120.f, -40.f, -53.f), FRotator(0.0f, 90.0f, 0.0f));
+	attachPoint_->SetRelativeLocationAndRotation(FVector(0.f, 0.f, 0.f), FRotator(0.0f, 90.0f, 0.0f));
 
 }
 
@@ -88,6 +89,17 @@ void APlayerPawn::Tick(float DeltaTime)
 		else {
 			cameraMoving = false;
 		}
+	}
+
+	if (spawnCard) {
+		FVector newLocation = GetActorLocation();
+		if(newLocation.X < 120)
+			newLocation.X += 1 * DeltaTime;
+		if (newLocation.Y > -40)
+			newLocation.Y += 1 * DeltaTime;
+		if (newLocation.Z > -53)
+			newLocation.Z += 1 * DeltaTime;
+		SetActorRelativeLocation(newLocation);
 	}
 }
 
@@ -114,4 +126,8 @@ void APlayerPawn::RotateLeft() {
 		cameraMoving = true;
 		count = 0;
 	}
+}
+
+void APlayerPawn::SpawnCard() {
+	spawnCard = true;
 }

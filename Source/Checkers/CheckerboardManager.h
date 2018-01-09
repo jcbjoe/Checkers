@@ -46,6 +46,7 @@ private:
 
 	AGridPiece* gridPieceArray[GRID_SIZE][GRID_SIZE];
 	ACheckerPiece* checkerPieceArray[GRID_SIZE][GRID_SIZE];
+	APlayerPawn* playerPawn;
 
 	void createCheckerboard();
 

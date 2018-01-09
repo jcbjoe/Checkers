@@ -33,6 +33,7 @@ protected:
 	UCameraComponent* OurCamera;
 
 	bool cameraMoving;
+	bool spawnCard;
 	float cameraInput;
 	float count;
 	int x;
@@ -47,6 +48,5 @@ public:
 
 	void RotateRight();
 	void RotateLeft();
-	int getX();
-	int getY();
+	void SpawnCard();
 };

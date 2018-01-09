@@ -377,7 +377,7 @@ void ACheckerboardManager::takePiece(ACheckerPiece* checkerPiece) {
 	int y = checkerPiece->getY();
 	checkerPieceArray[x][y] = nullptr;
 	checkerPiece->Destroy();
-	createCard();
+	playerPawn->SpawnCard();
 }
 
 void ACheckerboardManager::createCard() {
