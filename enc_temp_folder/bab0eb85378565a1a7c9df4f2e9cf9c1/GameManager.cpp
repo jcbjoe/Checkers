@@ -17,14 +17,7 @@ void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	checkerBoardManager = GetWorld()->SpawnActor<ACheckerboardManager>(FVector(0), FRotator(0), FActorSpawnParameters());
 
-	checkerBoardManager->initManager(this);
-
-
-	playersTurn = FMath::RandRange(0, 1);
-
-	startTurn();
 }
 
 // Called every frame
@@ -48,6 +41,21 @@ void AGameManager::tickTimer() {
 	int seconds = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 	if (lastSecond <= seconds) {
 		//--- 1 second
+
+		if (!initialised) {
+			if (GetWorld() != nullptr) {
+				checkerBoardManager = GetWorld()->SpawnActor<ACheckerboardManager>(FVector(0), FRotator(0), FActorSpawnParameters());
+
+				checkerBoardManager->initManager(this);
+
+
+				playersTurn = FMath::RandRange(0, 1);
+
+				startTurn();
+
+				initialised = true;
+			}
+		}
 
 		seconds++;
 

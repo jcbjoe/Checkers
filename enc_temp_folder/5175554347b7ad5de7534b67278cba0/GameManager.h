@@ -51,4 +51,5 @@ private:
 	bool playerTimerOn;
 	int playerTimerCurrentSeconds;
 
+	bool initialised;
 };
