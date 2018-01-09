@@ -7,6 +7,8 @@
 #include "MyUserWidget.h"
 #include "MyPlayerController.generated.h"
 
+class ACard;
+
 /**
  * 
  */
@@ -28,6 +30,7 @@ public:
 	virtual void BeginPlay();
 
 	UMyUserWidget* getHudWidget();
-	
+
+	void attachCard(ACard* card);
 	
 };

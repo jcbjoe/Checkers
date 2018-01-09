@@ -4,7 +4,7 @@
 
 
 // Sets default values
-ACard::ACard()
+ACard::ACard() : attached(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -33,6 +33,11 @@ void ACard::Tick(float DeltaTime)
 		FVector NewLocation = GetActorLocation();
 		NewLocation.Z += 500 * DeltaTime;
 		SetActorLocation(NewLocation);
+	}
+	else {
+		if (!attached) {
+			((AMyPlayerController*)(UGameplayStatics::GetPlayerController(GetWorld(), 0)))->attachCard(this);
+		}
 	}
 }
 

@@ -2,6 +2,7 @@
 
 #include "MyPlayerController.h"
 #include "Blueprint/UserWidget.h"
+#include "Card.h"
 
 
 
@@ -23,7 +24,6 @@ void AMyPlayerController::BeginPlay() {
 			//let add it to the view port
 			MyMainMenu->AddToViewport();
 		}
-
 		//Show the Cursor.
 		bShowMouseCursor = true;
 	}
@@ -32,4 +32,12 @@ void AMyPlayerController::BeginPlay() {
 
 UMyUserWidget* AMyPlayerController::getHudWidget() {
 	return MyMainMenu;
+}
+
+void AMyPlayerController::attachCard(ACard* card) {
+
+	APlayerPawn* Pawn = ((APlayerPawn*)GetCharacter());
+
+	card->AttachToActor(Pawn, FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
+
 }

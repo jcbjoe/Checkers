@@ -28,6 +28,10 @@ APlayerPawn::APlayerPawn()
 
 	OurCameraSpringArm->bDoCollisionTest = false;
 
+	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Card_Low_Poly.Card_Low_Poly'"));
+	attachPoint_ = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AttachPoint"));
+	attachPoint_->SetStaticMesh(gridMesh.Object);
+	attachPoint_->SetupAttachment(OurCameraSpringArm, USpringArmComponent::SocketName);
 
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("GameCamera"));
 
@@ -64,6 +68,8 @@ void APlayerPawn::BeginPlay()
 
 	this->SetActorLocationAndRotation(startLocation, Rotation);
 	
+	attachPoint_->SetRelativeLocationAndRotation(FVector(120.f, -40.f, -53.f), FRotator(0.0f, 90.0f, 0.0f));
+
 }
 
 // Called every frame

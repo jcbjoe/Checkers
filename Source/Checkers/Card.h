@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
+#include "PlayerPawn.h"
+#include "MyPlayerController.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Card.generated.h"
 
 UCLASS()
@@ -27,6 +30,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
+private: 
+	bool attached;
 	
 };

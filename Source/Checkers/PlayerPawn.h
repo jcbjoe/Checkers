@@ -7,6 +7,8 @@
 #include "Camera/CameraComponent.h"
 #include "Runtime/Engine/Classes/GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
+#include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
+#include "Components/StaticMeshComponent.h"
 #include "PlayerPawn.generated.h"
 
 UCLASS()
@@ -17,6 +19,9 @@ class CHECKERS_API APlayerPawn : public APawn
 public:
 	// Sets default values for this pawn's properties
 	APlayerPawn();
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* attachPoint_;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -24,11 +29,14 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* OurCameraSpringArm;
+	UPROPERTY(EditAnywhere)
 	UCameraComponent* OurCamera;
 
 	bool cameraMoving;
 	float cameraInput;
 	float count;
+	int x;
+	int y;
 
 public:	
 	// Called every frame
@@ -39,4 +47,6 @@ public:
 
 	void RotateRight();
 	void RotateLeft();
+	int getX();
+	int getY();
 };
