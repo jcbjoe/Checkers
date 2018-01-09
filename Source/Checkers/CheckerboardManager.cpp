@@ -377,4 +377,9 @@ void ACheckerboardManager::takePiece(ACheckerPiece* checkerPiece) {
 	int y = checkerPiece->getY();
 	checkerPieceArray[x][y] = nullptr;
 	checkerPiece->Destroy();
+	createCard();
+}
+
+void ACheckerboardManager::createCard() {
+	ACard* card = GetWorld()->SpawnActor<ACard>(ACard::StaticClass(), FVector(3350, -550, 1500.0), FRotator(0.0, 45.0, 45.0), FActorSpawnParameters());
 }

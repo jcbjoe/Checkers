@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GridPiece.h"
 #include "CheckerPiece.h"
+#include "Card.h"
 #include <Runtime/Engine/Classes/Engine/Engine.h>
 #include <EngineGlobals.h>
 #include <vector>
@@ -77,5 +78,7 @@ private:
 	ACheckerPiece* getPieceTaking(AGridPiece* gridPiece);
 
 	void takePiece(ACheckerPiece* checkerPiece);
+
+	void createCard();
 
 };
