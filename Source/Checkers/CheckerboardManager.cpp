@@ -49,6 +49,21 @@ void ACheckerboardManager::Tick(float DeltaTime)
 				checkerPieceMoving->setXY(pieceToMoveTo->getX(), pieceToMoveTo->getY());
 				checkerPieceArray[checkerPieceMoving->getX()][checkerPieceMoving->getY()] = checkerPieceMoving;
 				pieceMoving = false;
+				if (!checkerPieceMoving->isKing()) {
+					int player = checkerPieceMoving->getPlayer();
+					//--- Moving Right
+					if (player == 0) {
+						if (checkerPieceMoving->getX() == 0) {
+							checkerPieceMoving->makeKing();
+						}
+					}
+					//--- Moving Left
+					if (player == 1) {
+						if (checkerPieceMoving->getX() == (GRID_SIZE - 1)) {
+							checkerPieceMoving->makeKing();
+						}
+					}
+				}
 			}
 		}
 
@@ -70,6 +85,9 @@ void ACheckerboardManager::onClicked(int x, int y) {
 		//--- Get old selected grid piece and unselect it.
 		AGridPiece* oldSelectedCheckerPiece = getGridPieceAt(selectedX, selectedY);
 		//--- Grab new selected grid piece
+
+		UE_LOG(LogTemp, Warning, TEXT("SelectingAt X: %d SelectingAt Y: %d"), x, y);
+
 		AGridPiece* newSelected = getGridPieceAt(x, y);
 		GameManager->getUI()->setAlertMessage(FString("X: ") + FString::FromInt(x) + FString("y:") + FString::FromInt(y), 5);
 		if (hasPieceOnTop(newSelected)) {
@@ -118,21 +136,6 @@ void ACheckerboardManager::onClicked(int x, int y) {
 
 					removePossibleMoves();
 					
-					if (!checkerPieceMoving->isKing()) {
-						int player = checkerPieceMoving->getPlayer();
-						//--- Moving Right
-						if (player == 0) {
-							if (checkerPieceMoving->getX() == 0) {
-								checkerPieceMoving->makeKing();
-							}
-						}
-						//--- Moving Left
-						if (player == 1) {
-							if (checkerPieceMoving->getX() == (GRID_SIZE - 1)) {
-								checkerPieceMoving->makeKing();
-							}
-						}
-					}
 				}
 			}
 		}
@@ -155,12 +158,11 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 				if (hasPieceOnTop(leftBottom)) {
 					//--- JUMP
 					if (getCheckerPieceOnTop(leftBottom)->getPlayer() != player) {
-
 						int JumpOverX = selectedX - 2;
 						int JumpoverY = selectedY - 2;
 
 						//--- Make sure our y is not less than 0 (off the board)
-						if (JumpoverY >= 0) {
+						if (JumpoverY >= 0 && JumpOverX >= 0) {
 
 							AGridPiece* JumpOverMove = getGridPieceAt(JumpOverX, JumpoverY);
 
@@ -192,7 +194,7 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 						int JumpoverY = selectedY + 2;
 
 						//--- Make sure our Y is not off the top of the board
-						if (JumpoverY <= (GRID_SIZE - 1)) {
+						if (JumpoverY <= (GRID_SIZE - 1) && JumpOverX >= 0) {
 
 							AGridPiece* JumpOverMove = getGridPieceAt(JumpOverX, JumpoverY);
 
@@ -223,7 +225,7 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 						int JumpoverY = selectedY - 2;
 
 						//--- Make sure our y is not less than 0 (off the board)
-						if (JumpoverY >= 0) {
+						if (JumpoverY >= 0 && JumpOverX < (GRID_SIZE - 1)) {
 
 							AGridPiece* JumpOverMove = getGridPieceAt(JumpOverX, JumpoverY);
 
@@ -250,7 +252,7 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 						int JumpoverY = selectedY + 2;
 
 						//--- Make sure our Y is not off the top of the board
-						if (JumpoverY <= (GRID_SIZE - 1)) {
+						if (JumpoverY <= (GRID_SIZE - 1) && JumpOverX < (GRID_SIZE - 1)) {
 
 							AGridPiece* JumpOverMove = getGridPieceAt(JumpOverX, JumpoverY);
 
@@ -322,6 +324,14 @@ void ACheckerboardManager::createCheckerboard() {
 bool ACheckerboardManager::hasPieceOnTop(AGridPiece* gridPiece) {
 	int x = gridPiece->getX();
 	int y = gridPiece->getY();
+	if (x > GRID_SIZE-1 || x < 0) {
+		int breakPoint = 0;
+		x = 0;
+	}
+	if (y > GRID_SIZE - 1 || y < 0) {
+		int breakPoint = 0;
+		y = 0;
+	}
 	ACheckerPiece* piece = checkerPieceArray[x][y];
 	if (piece == nullptr)
 		return false;

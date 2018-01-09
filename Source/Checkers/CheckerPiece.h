@@ -21,6 +21,7 @@ public:
 	ACheckerPiece();
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* checkerPieceMesh_;
+	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* checkerPieceKingMesh_;
 
 protected:

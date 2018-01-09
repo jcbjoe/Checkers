@@ -15,6 +15,12 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 
 	checkerPieceMesh_->SetStaticMesh(gridMesh.Object);
 
+	checkerPieceKingMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("KingMesh"));
+
+	checkerPieceKingMesh_->SetStaticMesh(gridMesh.Object);
+	checkerPieceKingMesh_->SetVisibility(false);
+	checkerPieceKingMesh_->SetMobility(EComponentMobility::Movable);
+
 	RootComponent = checkerPieceMesh_;
 
 	initEvents();
@@ -42,14 +48,14 @@ void ACheckerPiece::initEvents() {
 void ACheckerPiece::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	checkerPieceKingMesh_->SetRelativeLocation(FVector(0, 0, 100));
+	checkerPieceKingMesh_->AttachTo(RootComponent);
 }
 
 // Called every frame
 void ACheckerPiece::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ACheckerPiece::passVariables(int i, int j, int passedPlayer, ACheckerboardManager* cbm) {
@@ -58,10 +64,13 @@ void ACheckerPiece::passVariables(int i, int j, int passedPlayer, ACheckerboardM
 	y = j;
 	player = passedPlayer;
 	checkerBoardManager_ = cbm;
-	if (player == 1)
+	if (player == 1) {
 		checkerPieceMesh_->SetMaterial(0, player1Material_);
-	else
+		checkerPieceKingMesh_->SetMaterial(0, player1Material_);
+	} else {
 		checkerPieceMesh_->SetMaterial(0, player2Material_);
+		checkerPieceKingMesh_->SetMaterial(0, player2Material_);
+	}
 }
 
 void ACheckerPiece::CustomOnBeginMouseOver(UPrimitiveComponent* TouchedComponent) {
@@ -104,5 +113,5 @@ void ACheckerPiece::setXY(int passedX, int passedY) {
 
 void ACheckerPiece::makeKing() {
 	king = true;
-	checkerPieceKingMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("KingMesh"));
+	checkerPieceKingMesh_->SetVisibility(true);
 }
