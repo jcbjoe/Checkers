@@ -143,16 +143,13 @@ void ACheckerboardManager::onClicked(int x, int y) {
 }
 
 void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
-	//--- Gets a bit complicated here
-	if (isKing) {
-
-	} else {
-		//--- Check which player is moving
-		if (player == 0) {
-			//--- So we are on the Right side going LEFT! So we need to go right so x  -1
-			//--- This is the BOTTOM highlight
-			//--- Check that the selected piece is not on the bottom of the grid
-			if (!(selectedY == 0)) {
+	//--- Check which player is moving
+	if (player == 0 || isKing) {
+		//--- So we are on the Right side going LEFT! So we need to go right so x  -1
+		//--- This is the BOTTOM highlight
+		//--- Check that the selected piece is not on the bottom of the grid
+		if (!(selectedY == 0)) {
+			if (!(((selectedX - 1) < 0) || ((selectedY - 1) < 0))){
 				AGridPiece* leftBottom = getGridPieceAt(selectedX - 1, selectedY - 1);
 				//--- Check if we need to jump over or not
 				if (hasPieceOnTop(leftBottom)) {
@@ -179,9 +176,11 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 					possibleMoveGridPieces.push_back({ leftBottom, nullptr });
 				}
 			}
-			//--- This is the TOP highlight
-			//--- Check the selected piece is not on the top of the grid, its -1 because of the loop that builds the grid starts at 0
-			if (!(selectedY == (GRID_SIZE - 1))) {
+		}
+		//--- This is the TOP highlight
+		//--- Check the selected piece is not on the top of the grid, its -1 because of the loop that builds the grid starts at 0
+		if (!(selectedY == (GRID_SIZE - 1))) {
+			if (!(((selectedX - 1) < 0) || ((selectedY + 1) > (GRID_SIZE - 1)))) {
 				//--- Left  top Piece
 				AGridPiece* leftTop = getGridPieceAt(selectedX - 1, selectedY + 1);
 				//--- is there a piece on top?
@@ -211,9 +210,12 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 					possibleMoveGridPieces.push_back({ leftTop, nullptr });
 				}
 			}
-		} else {
-			//--- WE are on the LEFT side going RIGHT
-			if (!(selectedY == 0)) {
+		}
+	}
+	if (player == 1 || isKing) {
+		//--- WE are on the LEFT side going RIGHT
+		if (!(selectedY == 0)) {
+			if (!(((selectedX + 1) > (GRID_SIZE - 1)) || ((selectedY - 1) < 0))){
 				//--- This is the BOTTOM highlight
 				AGridPiece* rightBottom = getGridPieceAt(selectedX + 1, selectedY - 1);
 				//--- is there a piece on top?
@@ -242,7 +244,9 @@ void ACheckerboardManager::showPossibleMoves(int player, bool isKing) {
 					possibleMoveGridPieces.push_back({ rightBottom, nullptr });
 				}
 			}
-			if (!(selectedY == (GRID_SIZE - 1))) {
+		}
+		if (!(selectedY == (GRID_SIZE - 1))) {
+			if (!(((selectedX + 1) > (GRID_SIZE - 1)) || ((selectedY + 1) > (GRID_SIZE - 1)))) {
 				//--- This is the TOP highlight
 				AGridPiece* rightTop = getGridPieceAt(selectedX + 1, selectedY + 1);
 				if (hasPieceOnTop(rightTop)) {

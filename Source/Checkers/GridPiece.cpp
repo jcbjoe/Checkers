@@ -147,8 +147,6 @@ void AGridPiece::setSelected(bool selected) {
 }
 
 int AGridPiece::getX() {
-	if (this == nullptr)
-		return 0;
 	return x;
 }
 int AGridPiece::getY() {
