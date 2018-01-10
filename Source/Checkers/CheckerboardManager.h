@@ -88,4 +88,8 @@ private:
 	ACheckerPiece* takingPiecePiece;
 
 	vector<vector<AGridPiece*>> possibleMovesTaking;
+
+	bool canThisPieceBeMoved(AGridPiece* );
+
+	vector<vector<AGridPiece*>> canBeMovedArray;
 };

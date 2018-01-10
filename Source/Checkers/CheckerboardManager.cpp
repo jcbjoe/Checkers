@@ -4,10 +4,12 @@
 #include "GameManager.h"
 
 // Sets default values
-ACheckerboardManager::ACheckerboardManager(): selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr), takingPiece(false)
+ACheckerboardManager::ACheckerboardManager() : selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr), takingPiece(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	canBeMovedArray = {};
 
 }
 
@@ -97,83 +99,89 @@ ACheckerPiece* ACheckerboardManager::getCheckerPieceAt(int x, int y) {
 
 void ACheckerboardManager::onClicked(int x, int y) {
 	if (!pieceMoving) {
-		if ((takingPiece && (possibleMovesContains(gridPieceArray[x][y], possibleMovesTaking))  || !takingPiece)) {
+		if ((takingPiece && (possibleMovesContains(gridPieceArray[x][y], possibleMovesTaking)) || !takingPiece)) {
+			canBeMovedArray = {};
+			bool canMoved = canThisPieceBeMoved(gridPieceArray[x][y]); // Generates Array
+			bool MoveContains = possibleMovesContains(gridPieceArray[x][y], canBeMovedArray);
+			if(canMoved || MoveContains){
+				//--- Get old selected grid piece and unselect it.
+				AGridPiece* oldSelectedGridPiece = getGridPieceAt(selectedX, selectedY);
+				//--- Grab new selected grid piece
 
-			//--- Get old selected grid piece and unselect it.
-			AGridPiece* oldSelectedGridPiece = getGridPieceAt(selectedX, selectedY);
-			//--- Grab new selected grid piece
+				UE_LOG(LogTemp, Warning, TEXT("SelectingAt X: %d SelectingAt Y: %d"), x, y);
 
-			UE_LOG(LogTemp, Warning, TEXT("SelectingAt X: %d SelectingAt Y: %d"), x, y);
+				AGridPiece* newSelected = getGridPieceAt(x, y);
+				GameManager->getUI()->setAlertMessage(FString("X: ") + FString::FromInt(x) + FString("y:") + FString::FromInt(y), 5);
+				if (hasPieceOnTop(newSelected)) {
+					//--- Grab our new checker piece
+					ACheckerPiece* checkerPiece = getCheckerPieceAt(x, y);
 
-			AGridPiece* newSelected = getGridPieceAt(x, y);
-			GameManager->getUI()->setAlertMessage(FString("X: ") + FString::FromInt(x) + FString("y:") + FString::FromInt(y), 5);
-			if (hasPieceOnTop(newSelected)) {
-				//--- Grab our new checker piece
-				ACheckerPiece* checkerPiece = getCheckerPieceAt(x, y);
+					if (checkerPiece->getPlayer() != GameManager->getCurrentPlayer()) {
+						//Display Message saying not piece
+						GameManager->getUI()->setAlertMessage(FString("This is not your piece!"), 5);
+					}
+					else {
 
-				if (checkerPiece->getPlayer() != GameManager->getCurrentPlayer()) {
-					//Display Message saying not piece
-					GameManager->getUI()->setAlertMessage(FString("This is not your piece!"), 5);
+						oldSelectedGridPiece->setSelected(false);
+
+						//--- Change selected vars
+						selectedX = x;
+						selectedY = y;
+
+						//--- Remove old possible moves
+						removePossibleMoves();
+						//--- If there is a checker piece on top of the grid piece we have selected, remember you can select a grid piece by clicking the checker pawn too
+						newSelected->setSelected(true);
+						//--- Grab side and if they are a king
+						int player = checkerPiece->getPlayer();
+						bool isKing = checkerPiece->isKing();
+						//--- Show the possible moves the player can make
+						showPossibleMoves(newSelected);
+					}
 				}
 				else {
+					vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(oldSelectedGridPiece);
+					if (possibleMovesContains(newSelected, possibleMovesForSelectedGrid)) {
+						//--- Move Piece
+						if (!pieceMoving) {
+							if (isThereAPieceCanTake(possibleMovesForSelectedGrid)) {
 
-					oldSelectedGridPiece->setSelected(false);
+								if (canTakePiece(newSelected, possibleMovesForSelectedGrid)) {
 
-					//--- Change selected vars
-					selectedX = x;
-					selectedY = y;
+									oldSelectedGridPiece->setSelected(false);
+									checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
+									pieceToMoveTo = newSelected;
+									pieceMoving = true;
 
-					//--- Remove old possible moves
-					removePossibleMoves();
-					//--- If there is a checker piece on top of the grid piece we have selected, remember you can select a grid piece by clicking the checker pawn too
-					newSelected->setSelected(true);
-					//--- Grab side and if they are a king
-					int player = checkerPiece->getPlayer();
-					bool isKing = checkerPiece->isKing();
-					//--- Show the possible moves the player can make
-					showPossibleMoves(newSelected);
-				}
-			}
-			else {
-				vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(oldSelectedGridPiece);
-				if (possibleMovesContains(newSelected, possibleMovesForSelectedGrid)) {
-					//--- Move Piece
-					if (!pieceMoving) {
-						if (isThereAPieceCanTake(possibleMovesForSelectedGrid)) {
+									ACheckerPiece* pieceToTake = getPieceTaking(newSelected, possibleMovesForSelectedGrid);
+									takePiece(pieceToTake);
+									removePossibleMoves();
 
-							if (canTakePiece(newSelected, possibleMovesForSelectedGrid)) {
+									takingPiece = true;
 
+
+								}
+								else {
+									GameManager->getUI()->setAlertMessage(FString("There is a piece you can take, You must take it!"), 5);
+								}
+							}
+							else {
 								oldSelectedGridPiece->setSelected(false);
 								checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
 								pieceToMoveTo = newSelected;
 								pieceMoving = true;
 
-								ACheckerPiece* pieceToTake = getPieceTaking(newSelected, possibleMovesForSelectedGrid);
-								takePiece(pieceToTake);
 								removePossibleMoves();
 
-								takingPiece = true;
-
+								GameManager->endTurn();
 
 							}
-							else {
-								GameManager->getUI()->setAlertMessage(FString("There is a piece you can take, You must take it!"), 5);
-							}
-						}
-						else {
-							oldSelectedGridPiece->setSelected(false);
-							checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
-							pieceToMoveTo = newSelected;
-							pieceMoving = true;
-
-							removePossibleMoves();
-
-							GameManager->endTurn();
 
 						}
-
 					}
 				}
+			} else {
+				GameManager->getUI()->setAlertMessage(FString("There is another piece that can be taken, You must take that by default!"), 5);
 			}
 		} else {
 			GameManager->getUI()->setAlertMessage(FString("You can only move the piece that has been moved!"), 5);
@@ -454,4 +462,33 @@ void ACheckerboardManager::takePiece(ACheckerPiece* checkerPiece) {
 	int y = checkerPiece->getY();
 	checkerPieceArray[x][y] = nullptr;
 	checkerPiece->Destroy();
+}
+
+
+bool ACheckerboardManager::canThisPieceBeMoved(AGridPiece* gridPiece) {
+
+	int player = GameManager->getCurrentPlayer();
+
+	bool returnVar = true;
+
+	for (int x = 0; x < GRID_SIZE; x++) {
+		for (int y = 0; y < GRID_SIZE; y++) {
+			if (getCheckerPieceOnTop(gridPieceArray[x][y]) != nullptr) {
+				AGridPiece * gridPieceChoosen = gridPieceArray[x][y];
+				if (getCheckerPieceOnTop(gridPieceChoosen)->getPlayer() == player) {
+					vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(gridPieceChoosen);
+					bool canTake = isThereAPieceCanTake(possibleMovesForSelectedGrid);
+					if (canTake && !(gridPieceChoosen == gridPiece)) {
+						returnVar = false;
+					}
+				}
+			}
+		}
+	}
+	if (getCheckerPieceOnTop(gridPiece)) {
+		canBeMovedArray = findPossibleMoves(gridPiece);
+	}
+
+	return returnVar;
+
 }
