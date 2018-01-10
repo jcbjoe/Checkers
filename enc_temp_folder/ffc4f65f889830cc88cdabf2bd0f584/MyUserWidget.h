@@ -74,7 +74,4 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void despawnCard();
-
-	UFUNCTION(BlueprintCallable)
-	void rotateCard();
 };

@@ -124,22 +124,9 @@ void APlayerPawn::Tick(float DeltaTime)
 			newLocation.Z -= 1;
 			z--;
 		}
-		if ((newLocation.X == 50) && (newLocation.Y == -10) && (newLocation.Z == -200)) {
+		if ((newLocation.X == 50) && (newLocation.Y == -10) && (newLocation.Z == -200))
 			despawnCard = false;
-			attachPoint_->SetRelativeRotation(FRotator(0.0, 90.0, 0.0));
-		}
 		attachPoint_->SetRelativeLocation(newLocation);
-	}
-
-	if (rotateCard) {
-		FRotator newRotation = FRotator(0.0, 90.0 + ry, 0.0);
-		if (newRotation.Yaw < 260) {
-			newRotation.Yaw += 1;
-			ry++;
-		}
-		if (newRotation.Yaw == 260)
-			rotateCard = false;
-		attachPoint_->SetRelativeRotation(newRotation);
 	}
 }
 
@@ -180,9 +167,4 @@ void APlayerPawn::DespawnCard() {
 	x = 0;
 	y = 0;
 	z = 0;
-}
-
-void APlayerPawn::RotateCard() {
-	rotateCard = true;
-	ry = 0;
 }
