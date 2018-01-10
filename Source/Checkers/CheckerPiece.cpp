@@ -10,7 +10,7 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Piece.Piece'"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Pawns/Normal/pawn_gamemesh.pawn_gamemesh'"));
 	checkerPieceMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("BasePieceMesh"));
 
 	checkerPieceMesh_->SetStaticMesh(gridMesh.Object);
@@ -30,10 +30,10 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 }
 
 void ACheckerPiece::initMaterials() {
-	ConstructorHelpers::FObjectFinder<UMaterial> player1Mat(TEXT("Material'/Game/Materials/player1.player1'"));
+	ConstructorHelpers::FObjectFinder<UMaterial> player1Mat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
 	player1Material_ = player1Mat.Object;
 
-	ConstructorHelpers::FObjectFinder<UMaterial> player2Mat(TEXT("Material'/Game/Materials/player2.player2'"));
+	ConstructorHelpers::FObjectFinder<UMaterial> player2Mat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexW.TexW'"));
 	player2Material_ = player2Mat.Object;
 
 }

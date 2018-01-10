@@ -11,7 +11,7 @@ AGridPiece::AGridPiece(): x(0), y(0), type(0), highlighted(false)
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/mdl_GridPiece.mdl_GridPiece'"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/GridPiece.GridPiece'"));
 	gridPieceMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("GridMesh"));
 
 	gridPieceMesh_->SetStaticMesh(gridMesh.Object);

@@ -20,7 +20,7 @@ APlayerPawn::APlayerPawn()
 
 	OurCameraSpringArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 0.0f), FRotator(-45.0f, 90.0f, 0.0f));
 
-	OurCameraSpringArm->TargetArmLength = 1000.f;
+	OurCameraSpringArm->TargetArmLength = 90.f;
 
 	OurCameraSpringArm->bEnableCameraLag = true;
 
@@ -60,7 +60,7 @@ void APlayerPawn::BeginPlay()
 
 	FRotator Rotation(0.0f, 0.0f, 0.0f);
 
-	FVector startLocation(1400.f, -300.f, 900.f);
+	FVector startLocation(27.621824f, 36.829102f, 80.358833f);
 
 	this->SetActorLocationAndRotation(startLocation, Rotation);
 	
