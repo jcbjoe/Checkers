@@ -100,7 +100,6 @@ ACheckerPiece* ACheckerboardManager::getCheckerPieceAt(int x, int y) {
 void ACheckerboardManager::onClicked(int x, int y) {
 	if (!pieceMoving) {
 		if ((takingPiece && (possibleMovesContains(gridPieceArray[x][y], possibleMovesTaking)) || !takingPiece)) {
-			canBeMovedArray = {};
 			bool canMoved = canThisPieceBeMoved(gridPieceArray[x][y]); // Generates Array
 			bool MoveContains = possibleMovesContains(gridPieceArray[x][y], canBeMovedArray);
 			if(canMoved || MoveContains){
