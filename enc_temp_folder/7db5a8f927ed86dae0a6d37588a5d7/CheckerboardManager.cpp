@@ -3,9 +3,8 @@
 #include "CheckerboardManager.h"
 #include "GameManager.h"
 
-
 // Sets default values
-ACheckerboardManager::ACheckerboardManager(): selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr)
+ACheckerboardManager::ACheckerboardManager(): selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr), takingPiece(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -64,6 +63,21 @@ void ACheckerboardManager::Tick(float DeltaTime)
 						}
 					}
 				}
+				if (takingPiece) {
+					vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(pieceToMoveTo);
+					if (isThereAPieceCanTake(possibleMovesForSelectedGrid)) {
+						showPossibleMoves(pieceToMoveTo);
+						selectedX = pieceToMoveTo->getX();
+						selectedY = pieceToMoveTo->getY();
+						pieceToMoveTo->setSelected(true);
+					}
+					else {
+						removePossibleMoves();
+
+						GameManager->endTurn();
+					}
+					takingPiece = false;
+				}
 			}
 		}
 
@@ -82,7 +96,7 @@ ACheckerPiece* ACheckerboardManager::getCheckerPieceAt(int x, int y) {
 void ACheckerboardManager::onClicked(int x, int y) {
 	if (!pieceMoving) {
 		//--- Get old selected grid piece and unselect it.
-		AGridPiece* oldSelectedCheckerPiece = getGridPieceAt(selectedX, selectedY);
+		AGridPiece* oldSelectedGridPiece = getGridPieceAt(selectedX, selectedY);
 		//--- Grab new selected grid piece
 
 		UE_LOG(LogTemp, Warning, TEXT("SelectingAt X: %d SelectingAt Y: %d"), x, y);
@@ -98,7 +112,7 @@ void ACheckerboardManager::onClicked(int x, int y) {
 				GameManager->getUI()->setAlertMessage(FString("This is not your piece!"), 5);
 			} else {
 
-				oldSelectedCheckerPiece->setSelected(false);
+				oldSelectedGridPiece->setSelected(false);
 
 				//--- Change selected vars
 				selectedX = x;
@@ -112,35 +126,27 @@ void ACheckerboardManager::onClicked(int x, int y) {
 				int player = checkerPiece->getPlayer();
 				bool isKing = checkerPiece->isKing();
 				//--- Show the possible moves the player can make
-				showPossibleMoves(newSelected, player, isKing);
+				showPossibleMoves(newSelected);
 			}
 		} else {
-			if (possibleMovesContains(newSelected)) {
+			vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(oldSelectedGridPiece);
+			if (possibleMovesContains(newSelected, possibleMovesForSelectedGrid)) {
 				//--- Move Piece
 				if (!pieceMoving) {
-					if (isThereAPieceCanTake(GameManager->getCurrentPlayer())) {
+					if (isThereAPieceCanTake(possibleMovesForSelectedGrid)) {
 
-						if (canTakePiece(newSelected)) {
+						if (canTakePiece(newSelected, possibleMovesForSelectedGrid)) {
 
-							oldSelectedCheckerPiece->setSelected(false);
-							checkerPieceMoving = getCheckerPieceOnTop(oldSelectedCheckerPiece);
+							oldSelectedGridPiece->setSelected(false);
+							checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
 							pieceToMoveTo = newSelected;
 							pieceMoving = true;
 
-							ACheckerPiece* pieceToTake = getPieceTaking(newSelected);
+							ACheckerPiece* pieceToTake = getPieceTaking(newSelected, possibleMovesForSelectedGrid);
 							takePiece(pieceToTake);
 							removePossibleMoves();
-							findPossibleMoves(pieceToMoveTo, checkerPieceMoving->getPlayer(), checkerPieceMoving->isKing());
-							if (isThereAPieceCanTakeSingle()) {
-								showPossibleMoves(pieceToMoveTo, checkerPieceMoving->getPlayer(), checkerPieceMoving->isKing());
-								selectedX = pieceToMoveTo->getX();
-								selectedY = pieceToMoveTo->getY();
-								pieceToMoveTo->setSelected(true);
-							} else {
-								removePossibleMoves();
 
-								GameManager->endTurn();
-							}
+							takingPiece = true;
 							
 
 						}
@@ -148,8 +154,8 @@ void ACheckerboardManager::onClicked(int x, int y) {
 							GameManager->getUI()->setAlertMessage(FString("There is a piece you can take, You must take it!"), 5);
 						}
 					} else {
-						oldSelectedCheckerPiece->setSelected(false);
-						checkerPieceMoving = getCheckerPieceOnTop(oldSelectedCheckerPiece);
+						oldSelectedGridPiece->setSelected(false);
+						checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
 						pieceToMoveTo = newSelected;
 						pieceMoving = true;
 
@@ -158,22 +164,29 @@ void ACheckerboardManager::onClicked(int x, int y) {
 						GameManager->endTurn();
 							
 					}
+				
 				}
 			}
 		}
 	}
 }
 
-void ACheckerboardManager::showPossibleMoves(AGridPiece* gridPiece,  int player, bool isKing) {
+void ACheckerboardManager::showPossibleMoves(AGridPiece* gridPiece) {
 
-	findPossibleMoves(gridPiece, player, isKing);
+	vector<vector<AGridPiece*>> possibleMovesGridPieces = findPossibleMoves(gridPiece);
 
-	for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
+	for (std::vector<AGridPiece*> gridPieceVector : possibleMovesGridPieces) {
 		gridPieceVector[0]->setHighlighted(true);
 	}
 }
 
-void ACheckerboardManager::findPossibleMoves(AGridPiece* gridPiece, int player, bool isKing) {
+vector<vector<AGridPiece*>> ACheckerboardManager::findPossibleMoves(AGridPiece* gridPiece) {
+
+	int player = getCheckerPieceOnTop(gridPiece)->getPlayer();
+	bool isKing = getCheckerPieceOnTop(gridPiece)->isKing();
+
+	vector<vector<AGridPiece*>> possibleMovesGrid;
+
 	//--- Check which player is moving
 	int selectedGridPieceX = gridPiece->getX();
 	int selectedGridPieceY = gridPiece->getY();
@@ -198,13 +211,13 @@ void ACheckerboardManager::findPossibleMoves(AGridPiece* gridPiece, int player, 
 
 							//--- Is there a piece there?
 							if (!hasPieceOnTop(JumpOverMove)) {
-								possibleMoveGridPieces.push_back({ JumpOverMove, leftBottom });
+								possibleMovesGrid.push_back({ JumpOverMove, leftBottom });
 							}
 						}
 					}
 				} else {
 					//--- If no piece on top just normally highlight
-					possibleMoveGridPieces.push_back({ leftBottom, nullptr });
+					possibleMovesGrid.push_back({ leftBottom, nullptr });
 				}
 			}
 		}
@@ -230,13 +243,13 @@ void ACheckerboardManager::findPossibleMoves(AGridPiece* gridPiece, int player, 
 
 							//--- Is there a piece there?
 							if (!hasPieceOnTop(JumpOverMove)) {
-								possibleMoveGridPieces.push_back({ JumpOverMove, leftTop });
+								possibleMovesGrid.push_back({ JumpOverMove, leftTop });
 							}
 						}
 					}
 				} else {
 					//--- If no piece on top just normally highlight
-					possibleMoveGridPieces.push_back({ leftTop, nullptr });
+					possibleMovesGrid.push_back({ leftTop, nullptr });
 				}
 			}
 		}
@@ -262,13 +275,13 @@ void ACheckerboardManager::findPossibleMoves(AGridPiece* gridPiece, int player, 
 
 							//--- Is there a piece there?
 							if (!hasPieceOnTop(JumpOverMove)) {
-								possibleMoveGridPieces.push_back({ JumpOverMove, rightBottom });
+								possibleMovesGrid.push_back({ JumpOverMove, rightBottom });
 							}
 						}
 					}
 				} else {
 					//--- If no piece on top just normally highlight
-					possibleMoveGridPieces.push_back({ rightBottom, nullptr });
+					possibleMovesGrid.push_back({ rightBottom, nullptr });
 				}
 			}
 		}
@@ -289,24 +302,28 @@ void ACheckerboardManager::findPossibleMoves(AGridPiece* gridPiece, int player, 
 
 							//--- Is there a piece there?
 							if (!hasPieceOnTop(JumpOverMove)) {
-								possibleMoveGridPieces.push_back({ JumpOverMove, rightTop });
+								possibleMovesGrid.push_back({ JumpOverMove, rightTop });
 							}
 						}
 					}
 				} else {
 					//--- If no piece on top just normally highlight
-					possibleMoveGridPieces.push_back({ rightTop, nullptr });
+					possibleMovesGrid.push_back({ rightTop, nullptr });
 				}
 			}
 		}
 	}
+
+	return possibleMovesGrid;
 }
 
 void ACheckerboardManager::removePossibleMoves() {
-	for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
-		gridPieceVector[0]->setHighlighted(false);
+
+	for (int x = 0; x < GRID_SIZE; x++) {
+		for (int y = 0; y < GRID_SIZE; y++) {
+			gridPieceArray[x][y]->setHighlighted(false);
+		}
 	}
-	possibleMoveGridPieces.clear();
 }
 
 void ACheckerboardManager::createCheckerboard() {
@@ -374,7 +391,7 @@ ACheckerPiece* ACheckerboardManager::getCheckerPieceOnTop(AGridPiece* gridPiece)
 	return checkerPieceArray[x][y];
 }
 
-bool ACheckerboardManager::possibleMovesContains(AGridPiece* gridPiece) {
+bool ACheckerboardManager::possibleMovesContains(AGridPiece* gridPiece, vector<vector<AGridPiece*>> possibleMoveGridPieces) {
 	bool found = false;
 
 	for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
@@ -386,9 +403,9 @@ bool ACheckerboardManager::possibleMovesContains(AGridPiece* gridPiece) {
 	return found;
 }
 
-bool ACheckerboardManager::canTakePiece(AGridPiece* gridPiece) {
+bool ACheckerboardManager::canTakePiece(AGridPiece* gridPiece, vector<vector<AGridPiece*>> possibleMovesGrid) {
 	bool canTake = false;
-	for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
+	for (vector<AGridPiece*> gridPieceVector : possibleMovesGrid) {
 		if (gridPieceVector[0] == gridPiece) {
 			if (gridPieceVector[1] != nullptr) {
 				canTake = true;
@@ -399,49 +416,9 @@ bool ACheckerboardManager::canTakePiece(AGridPiece* gridPiece) {
 	return canTake;
 }
 
-bool ACheckerboardManager::isThereAPieceCanTake(int player) {
-
+bool ACheckerboardManager::isThereAPieceCanTake(vector<vector<AGridPiece*>> possibleMovesGrid) {
 	bool isThereAPieceCanTake = false;
-
-	for (int x = 0; x < GRID_SIZE; x++) {
-		for (int y = 0; y < GRID_SIZE; y++) {
-			AGridPiece* gridPiece = gridPieceArray[x][y];
-			if (getCheckerPieceOnTop(gridPiece) != nullptr) {
-				if (getCheckerPieceOnTop(gridPiece)->getPlayer() != player){
-					ACheckerPiece* checkerPiece = getCheckerPieceOnTop(gridPieceArray[x][y]);
-					findPossibleMoves(gridPiece, checkerPiece->getPlayer(), checkerPiece->isKing());
-					if (canTakePiece(gridPiece)) {
-						isThereAPieceCanTake = true;
-						break;
-					}
-				}
-			}
-			
-
-		}
-		if (isThereAPieceCanTake) {
-			break;
-		}
-	}
-
-	return isThereAPieceCanTake;
-
-
-	//bool isThereAPieceCanTake = false;
-	//for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
-	//	if (gridPieceVector[1] != nullptr) {
-	//		isThereAPieceCanTake = true;
-	//	}
-	//}
-
-	//return isThereAPieceCanTake;
-}
-
-bool ACheckerboardManager::isThereAPieceCanTakeSingle() {
-
-
-	bool isThereAPieceCanTake = false;
-	for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
+	for (vector<AGridPiece*> gridPieceVector : possibleMovesGrid) {
 		if (gridPieceVector[1] != nullptr) {
 			isThereAPieceCanTake = true;
 		}
@@ -450,9 +427,9 @@ bool ACheckerboardManager::isThereAPieceCanTakeSingle() {
 	return isThereAPieceCanTake;
 }
 
-ACheckerPiece* ACheckerboardManager::getPieceTaking(AGridPiece* gridPiece) {
+ACheckerPiece* ACheckerboardManager::getPieceTaking(AGridPiece* gridPiece, vector<vector<AGridPiece*>> possibleMovesGrid) {
 	ACheckerPiece* pieceInMiddle = nullptr;
-	for (std::vector<AGridPiece*> gridPieceVector : possibleMoveGridPieces) {
+	for (vector<AGridPiece*> gridPieceVector : possibleMovesGrid) {
 		if (gridPieceVector[0] == gridPiece) {
 			pieceInMiddle = getCheckerPieceOnTop(gridPieceVector[1]);
 		}

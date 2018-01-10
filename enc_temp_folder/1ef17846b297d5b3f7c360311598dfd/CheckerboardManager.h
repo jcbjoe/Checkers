@@ -14,6 +14,8 @@
 
 class AGameManager;
 
+using namespace std;
+
 UCLASS()
 class CHECKERS_API ACheckerboardManager : public AActor
 {
@@ -50,17 +52,17 @@ private:
 	int selectedX;
 	int selectedY;
 	
-	void showPossibleMoves(AGridPiece* gridPiece, int player, bool isKing);
+	void showPossibleMoves(AGridPiece*);
 
-	std::vector<std::vector<AGridPiece*>> possibleMoveGridPieces;
+	//std::vector<std::vector<AGridPiece*>> possibleMoveGridPieces;
 
 	void removePossibleMoves();
 
-	bool hasPieceOnTop(AGridPiece* gridPiece);
+	bool hasPieceOnTop(AGridPiece*);
 
-	ACheckerPiece* getCheckerPieceOnTop(AGridPiece* gridPiece);
+	ACheckerPiece* getCheckerPieceOnTop(AGridPiece*);
 
-	bool possibleMovesContains(AGridPiece* gridPiece);
+	bool possibleMovesContains(AGridPiece*, vector<vector<AGridPiece*>>);
 
 	bool pieceMoving;
 
@@ -72,15 +74,14 @@ private:
 
 	ACheckerPiece* proposedPieceToTake;
 
-	bool canTakePiece(AGridPiece* gridPiece);
+	bool canTakePiece(AGridPiece*, vector<vector<AGridPiece*>>);
 
-	ACheckerPiece* getPieceTaking(AGridPiece* gridPiece);
+	ACheckerPiece* getPieceTaking(AGridPiece*, vector<vector<AGridPiece*>>);
 
-	void takePiece(ACheckerPiece* checkerPiece);
+	void takePiece(ACheckerPiece*);
 
-	bool isThereAPieceCanTake(int player);
-	bool isThereAPieceCanTakeSingle();
-	void findPossibleMoves(AGridPiece* gridPiece, int player, bool isKing);
+	bool isThereAPieceCanTake(vector<vector<AGridPiece*>>);
+	vector<vector<AGridPiece*>> findPossibleMoves(AGridPiece*);
 
-
+	bool takingPiece;
 };
