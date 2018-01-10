@@ -59,6 +59,12 @@ private:
 	UMaterial* player1Material_;
 	UMaterial* player2Material_;
 
+	UMaterial* player1MaterialKingBody_;
+	UMaterial* player1MaterialKingExtra_;
+
+	UMaterial* player2MaterialKingBody_;
+	UMaterial* player2MaterialKingExtra_;
+
 	int x;
 	int y;
 	int player;

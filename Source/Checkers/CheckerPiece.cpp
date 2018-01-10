@@ -11,13 +11,14 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 	PrimaryActorTick.bCanEverTick = true;
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Pawns/Normal/pawn_gamemesh.pawn_gamemesh'"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> kingGridMesh(TEXT("StaticMesh'/Game/Models/Pawns/King/king_gamemesh.king_gamemesh'"));
 	checkerPieceMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("BasePieceMesh"));
 
 	checkerPieceMesh_->SetStaticMesh(gridMesh.Object);
 
 	checkerPieceKingMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("KingMesh"));
 
-	checkerPieceKingMesh_->SetStaticMesh(gridMesh.Object);
+	checkerPieceKingMesh_->SetStaticMesh(kingGridMesh.Object);
 	checkerPieceKingMesh_->SetVisibility(false);
 	checkerPieceKingMesh_->SetMobility(EComponentMobility::Movable);
 
@@ -33,8 +34,20 @@ void ACheckerPiece::initMaterials() {
 	ConstructorHelpers::FObjectFinder<UMaterial> player1Mat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
 	player1Material_ = player1Mat.Object;
 
+	ConstructorHelpers::FObjectFinder<UMaterial> player1MatKingBody(TEXT("Material'/Game/Models/Pawns/King/Textures/TexBodyB.TexBodyB'"));
+	player1MaterialKingBody_ = player1Mat.Object;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> player1MatKingExtra(TEXT("Material'/Game/Models/Pawns/King/Textures/TexOtherB.TexOtherB'"));
+	player1MaterialKingExtra_ = player1Mat.Object;
+
 	ConstructorHelpers::FObjectFinder<UMaterial> player2Mat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexW.TexW'"));
 	player2Material_ = player2Mat.Object;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> player2MatKingBody(TEXT("Material'/Game/Models/Pawns/King/Textures/TexBodyW.TexBodyW'"));
+	player2MaterialKingBody_ = player2Mat.Object;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> player2MatKingExtra(TEXT("Material'/Game/Models/Pawns/King/Textures/TexOtherW.TexOtherW'"));
+	player2MaterialKingExtra_ = player2Mat.Object;
 
 }
 
@@ -48,7 +61,8 @@ void ACheckerPiece::initEvents() {
 void ACheckerPiece::BeginPlay()
 {
 	Super::BeginPlay();
-	checkerPieceKingMesh_->SetRelativeLocation(FVector(0, 0, 100));
+	//checkerPieceKingMesh_->SetRelativeLocation(FVector(0, 0, 100));
+	checkerPieceKingMesh_->SetRelativeRotation(FRotator(0, 0, 0));
 	checkerPieceKingMesh_->AttachTo(RootComponent);
 }
 
@@ -66,10 +80,17 @@ void ACheckerPiece::passVariables(int i, int j, int passedPlayer, ACheckerboardM
 	checkerBoardManager_ = cbm;
 	if (player == 1) {
 		checkerPieceMesh_->SetMaterial(0, player1Material_);
-		checkerPieceKingMesh_->SetMaterial(0, player1Material_);
+
+		checkerPieceKingMesh_->SetMaterial(2, player1MaterialKingBody_);
+		checkerPieceKingMesh_->SetMaterial(0, player1MaterialKingExtra_);
+		checkerPieceKingMesh_->SetMaterial(1, player1MaterialKingExtra_);
+
 	} else {
 		checkerPieceMesh_->SetMaterial(0, player2Material_);
-		checkerPieceKingMesh_->SetMaterial(0, player2Material_);
+
+		checkerPieceKingMesh_->SetMaterial(2, player2MaterialKingBody_);
+		checkerPieceKingMesh_->SetMaterial(0, player2MaterialKingExtra_);
+		checkerPieceKingMesh_->SetMaterial(1, player2MaterialKingExtra_);
 	}
 }
 
@@ -113,5 +134,7 @@ void ACheckerPiece::setXY(int passedX, int passedY) {
 
 void ACheckerPiece::makeKing() {
 	king = true;
+	checkerPieceMesh_->SetVisibility(false);
 	checkerPieceKingMesh_->SetVisibility(true);
+	RootComponent = checkerPieceKingMesh_;
 }
