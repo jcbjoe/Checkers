@@ -100,9 +100,9 @@ ACheckerPiece* ACheckerboardManager::getCheckerPieceAt(int x, int y) {
 void ACheckerboardManager::onClicked(int x, int y) {
 	if (!pieceMoving) {
 		if ((takingPiece && (possibleMovesContains(gridPieceArray[x][y], possibleMovesTaking)) || !takingPiece)) {
-			//bool canMoved = canThisPieceBeMoved(gridPieceArray[x][y]); // Generates Array
-			//bool MoveContains = possibleMovesContains(gridPieceArray[x][y], canBeMovedArray);
-			//if(canMoved || MoveContains){
+			bool canMoved = canThisPieceBeMoved(gridPieceArray[x][y]); // Generates Array
+			bool MoveContains = possibleMovesContains(gridPieceArray[x][y], canBeMovedArray);
+			if(canMoved || MoveContains){
 				//--- Get old selected grid piece and unselect it.
 				AGridPiece* oldSelectedGridPiece = getGridPieceAt(selectedX, selectedY);
 				//--- Grab new selected grid piece
@@ -137,36 +137,34 @@ void ACheckerboardManager::onClicked(int x, int y) {
 						//--- Show the possible moves the player can make
 						showPossibleMoves(newSelected);
 					}
-				} else {
-					//--- Check the previous selected piece has a piece on top
-					if (hasPieceOnTop(oldSelectedGridPiece)) {
-						//--- Get all possible moves for the previous piece
-						vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(oldSelectedGridPiece);
-						//--- Check if the previous pieces moves contained the newly selected grid piece
-						if (possibleMovesContains(newSelected, possibleMovesForSelectedGrid)) {
-							//--- Is there another piece we have to take before moving?
+				}
+				else {
+					vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(oldSelectedGridPiece);
+					if (possibleMovesContains(newSelected, possibleMovesForSelectedGrid)) {
+						//--- Move Piece
+						if (!pieceMoving) {
 							if (isThereAPieceCanTake(possibleMovesForSelectedGrid)) {
-								//--- Can we take this newly selected piece ^^ Before we were checking if it existed to just move NOT TAKE
+
 								if (canTakePiece(newSelected, possibleMovesForSelectedGrid)) {
-									//--- Right we CAN take a piece - We hand over to tick to check if once moved there is another piece we can take.
+
 									oldSelectedGridPiece->setSelected(false);
 									checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
 									pieceToMoveTo = newSelected;
 									pieceMoving = true;
 
-									//--- Grab the piece we are taking and remove it.
 									ACheckerPiece* pieceToTake = getPieceTaking(newSelected, possibleMovesForSelectedGrid);
 									takePiece(pieceToTake);
-
-									//--- Get rid of highlighted moves (dont need anymore)
 									removePossibleMoves();
-									//--- lets move but dont end turn yet!
+
 									takingPiece = true;
-								} else {
+
+
+								}
+								else {
 									GameManager->getUI()->setAlertMessage(FString("There is a piece you can take, You must take it!"), 5);
 								}
-							//--- If we cannot take the piece we just move normally and end our turn
-							} else {
+							}
+							else {
 								oldSelectedGridPiece->setSelected(false);
 								checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
 								pieceToMoveTo = newSelected;
@@ -177,12 +175,13 @@ void ACheckerboardManager::onClicked(int x, int y) {
 								GameManager->endTurn();
 
 							}
+
 						}
 					}
 				}
-			//} else {
-			//	GameManager->getUI()->setAlertMessage(FString("There is another piece that can be taken, You must take that by default!"), 5);
-			//}
+			} else {
+				GameManager->getUI()->setAlertMessage(FString("There is another piece that can be taken, You must take that by default!"), 5);
+			}
 		} else {
 			GameManager->getUI()->setAlertMessage(FString("You can only move the piece that has been moved!"), 5);
 		}
