@@ -78,7 +78,8 @@ private:
 
 	void takePiece(ACheckerPiece* checkerPiece);
 
-	bool isThereAPieceCanTake();
+	bool isThereAPieceCanTake(int player);
+	bool isThereAPieceCanTakeSingle();
 	void findPossibleMoves(AGridPiece* gridPiece, int player, bool isKing);
 
 
