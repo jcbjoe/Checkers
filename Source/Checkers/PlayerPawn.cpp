@@ -65,7 +65,7 @@ void APlayerPawn::BeginPlay()
 
 	FRotator Rotation(0.0f, 45.0f, 0.0f);
 
-	FVector startLocation(27.621824f, 36.829102f, 80.358833f);
+	FVector startLocation(32, 32, 107.611404);
 
 	this->SetActorLocationAndRotation(startLocation, Rotation);
 	
@@ -96,22 +96,22 @@ void APlayerPawn::Tick(float DeltaTime)
 			newLocation.X += 0.1;
 			x += 0.1;
 		}
-		if (newLocation.Y > -1.0) {
+		if (newLocation.Y > 0.0) {
 			newLocation.Y -= 0.1;
 			y -= 0.1;
 		}
-		if (newLocation.Z < -4.0) {
+		if (newLocation.Z < -2.5) {
 			newLocation.Z += 0.1;
 			z += 0.1;
 		}
-		if ((newLocation.X >= 15.0) && (newLocation.Y <= -1.0) && (newLocation.Z >= -4.0)) {
+		if ((newLocation.X >= 15.0) && (newLocation.Y <= 0.0) && (newLocation.Z >= -2.5)) {
 			spawnCard = false;
 		}
 		attachPoint_->SetRelativeLocation(newLocation);
 	}
 
 	if (despawnCard) {
-		FVector newLocation = FVector(15.0 + x, -1.0 + y, -4.0 + z);
+		FVector newLocation = FVector(15.0 + x, 0.0 + y, -2.5 + z);
 		if (newLocation.X > 10.0) {
 			newLocation.X -= 0.1;
 			x -= 0.1;
@@ -133,11 +133,11 @@ void APlayerPawn::Tick(float DeltaTime)
 
 	if (rotateCard) {
 		FRotator newRotation = FRotator(0.0, 90.0 + ry, 0.0);
-		if (newRotation.Yaw < 260) {
+		if (newRotation.Yaw < 270) {
 			newRotation.Yaw += 1;
 			ry++;
 		}
-		if (newRotation.Yaw == 260)
+		if (newRotation.Yaw == 270)
 			rotateCard = false;
 		attachPoint_->SetRelativeRotation(newRotation);
 	}
