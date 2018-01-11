@@ -7,7 +7,6 @@
 #include "MyUserWidget.h"
 #include "MyPlayerController.generated.h"
 
-
 /**
  * 
  */
@@ -29,5 +28,6 @@ public:
 	virtual void BeginPlay();
 
 	UMyUserWidget* getHudWidget();
+	
 	
 };
