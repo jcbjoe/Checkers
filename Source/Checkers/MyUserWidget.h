@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "PlayerPawn.h"
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "MyUserWidget.generated.h"
@@ -17,8 +16,6 @@ class CHECKERS_API UMyUserWidget : public UUserWidget
 	
 public:
 	virtual void NativeConstruct() override;
-
-	APlayerPawn* playerPawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
 	FString Player1Time;
@@ -36,7 +33,7 @@ public:
 	FString Player2Score;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
-	int CurrentPlayer;
+	FString CurrentPlayer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
 	FString AlertMessage;
@@ -46,16 +43,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
 	bool showAlertMessage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
-	bool hidden;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
-	bool take;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
-	bool buttonPressed;
-
 	
 	void setPlayer1Time(FString time);
 
@@ -67,15 +54,8 @@ public:
 
 	void setPlayer2Score(FString time);
 
-	void setCurrentPlayer(int time);
+	void setCurrentPlayer(FString time);
 
 	void setAlertMessage(FString message, int displayTime);
 
-	void chooseCard(FString message);
-
-	UFUNCTION(BlueprintCallable)
-		void despawnCard();
-
-	UFUNCTION(BlueprintCallable)
-		void rotateCard();
 };

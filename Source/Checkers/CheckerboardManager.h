@@ -6,8 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "GridPiece.h"
 #include "CheckerPiece.h"
-#include "PlayerPawn.h"
-#include "Card.h"
 #include <Runtime/Engine/Classes/Engine/Engine.h>
 #include <EngineGlobals.h>
 #include <vector>
@@ -48,7 +46,6 @@ private:
 
 	AGridPiece* gridPieceArray[GRID_SIZE][GRID_SIZE];
 	ACheckerPiece* checkerPieceArray[GRID_SIZE][GRID_SIZE];
-	APlayerPawn* playerPawn;
 
 	void createCheckerboard();
 
