@@ -11,20 +11,14 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 	PrimaryActorTick.bCanEverTick = true;
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Pawns/Normal/pawn_gamemesh.pawn_gamemesh'"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> kingGridMesh(TEXT("StaticMesh'/Game/Models/Pawns/King/king_gamemesh.king_gamemesh'"));
 	checkerPieceMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("BasePieceMesh"));
+
 	checkerPieceMesh_->SetStaticMesh(gridMesh.Object);
 
-
-	ConstructorHelpers::FObjectFinder<UDestructibleMesh> destructiveMesh(TEXT("DestructibleMesh'/Game/Models/Pawns/Normal/pawn_gamemesh_DM.pawn_gamemesh_DM'"));
-	destructableMesh = destructiveMesh.Object;
-	destructive = CreateDefaultSubobject <UDestructibleComponent>(TEXT("DestructiveMesh"));
-
-
-
-	ConstructorHelpers::FObjectFinder<UStaticMesh> kingGridMesh(TEXT("StaticMesh'/Game/Models/Pawns/King/king_gamemesh.king_gamemesh'"));
 	checkerPieceKingMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("KingMesh"));
-	checkerPieceKingMesh_->SetStaticMesh(kingGridMesh.Object);
 
+	checkerPieceKingMesh_->SetStaticMesh(kingGridMesh.Object);
 	checkerPieceKingMesh_->SetVisibility(false);
 	checkerPieceKingMesh_->SetMobility(EComponentMobility::Movable);
 
@@ -70,7 +64,6 @@ void ACheckerPiece::BeginPlay()
 	//checkerPieceKingMesh_->SetRelativeLocation(FVector(0, 0, 100));
 	checkerPieceKingMesh_->SetRelativeRotation(FRotator(0, 0, 0));
 	checkerPieceKingMesh_->AttachTo(RootComponent);
-	destructive->AttachTo(RootComponent);
 }
 
 // Called every frame
@@ -144,10 +137,4 @@ void ACheckerPiece::makeKing() {
 	checkerPieceMesh_->SetVisibility(false);
 	checkerPieceKingMesh_->SetVisibility(true);
 	RootComponent = checkerPieceKingMesh_;
-	destructive->SetDestructibleMesh(destructableMesh);
-}
-
-void ACheckerPiece::taken() {
-	checkerPieceMesh_->SetVisibility(false);
-	destructive->SetDestructibleMesh(destructableMesh);
 }
