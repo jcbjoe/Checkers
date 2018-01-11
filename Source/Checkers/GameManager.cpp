@@ -54,6 +54,7 @@ void AGameManager::tickTimer() {
 		if (playerTimerOn) {
 			if (playerTimerCurrentSeconds > 30) {
 				playerTimerOn = false;
+				//getUI()->despawnCard();
 				endTurn();
 			}
 			if (playersTurn == 0)

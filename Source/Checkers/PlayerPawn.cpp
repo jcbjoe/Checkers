@@ -5,7 +5,7 @@
 
 
 // Sets default values
-APlayerPawn::APlayerPawn(): cameraMoving(false), spawnCard(false), despawnCard(false), rotateCard(false)
+APlayerPawn::APlayerPawn(): cameraMoving(false), spawnCard(false), spawnedCard(false), despawnCard(false), rotateCard(false)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -171,16 +171,20 @@ void APlayerPawn::RotateLeft() {
 void APlayerPawn::SpawnCard() {
 	card->SelectCard();
 	spawnCard = true;
+	spawnedCard = true;
 	x = 0;
 	y = 0;
 	z = 0;
 }
 
 void APlayerPawn::DespawnCard() {
-	despawnCard = true;
-	x = 0;
-	y = 0;
-	z = 0;
+	if (spawnedCard == true) {
+		despawnCard = true;
+		x = 0;
+		y = 0;
+		z = 0;
+		spawnCard = false;
+	}
 }
 
 void APlayerPawn::RotateCard() {

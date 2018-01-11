@@ -35,6 +35,7 @@ protected:
 
 	bool cameraMoving;
 	bool spawnCard;
+	bool spawnedCard;
 	bool despawnCard;
 	bool rotateCard;
 	float cameraInput;
