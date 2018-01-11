@@ -5,7 +5,7 @@
 
 
 // Sets default values
-APlayerPawn::APlayerPawn()
+APlayerPawn::APlayerPawn(): cameraMoving(false), spawnCard(false), despawnCard(false), rotateCard(false)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -69,7 +69,7 @@ void APlayerPawn::BeginPlay()
 
 	this->SetActorLocationAndRotation(startLocation, Rotation);
 	
-	attachPoint_->SetRelativeLocationAndRotation(FVector(50.f, -10.f, -200.f), FRotator(0.0f, 90.0f, 0.0f));
+	attachPoint_->SetRelativeLocationAndRotation(FVector(10.f, 0.f, -15.f), FRotator(0.0f, 90.0f, 0.0f));
 }
 
 // Called every frame
@@ -91,39 +91,40 @@ void APlayerPawn::Tick(float DeltaTime)
 	}
 
 	if (spawnCard) {
-		FVector newLocation = FVector(50.0 + x, -10.0 + y, -200.0 + z);
-		if (newLocation.X < 120) {
-			newLocation.X += 1;
-			x++;
+		FVector newLocation = FVector(10.0 + x, 0.0 + y, -15.0 + z);
+		if (newLocation.X < 15.0) {
+			newLocation.X += 0.1;
+			x += 0.1;
 		}
-		if (newLocation.Y > -40) {
-			newLocation.Y -= 1;
-			y--;
+		if (newLocation.Y > -1.0) {
+			newLocation.Y -= 0.1;
+			y -= 0.1;
 		}
-		if (newLocation.Z < -53) {
-			newLocation.Z += 1;
-			z++;
+		if (newLocation.Z < -4.0) {
+			newLocation.Z += 0.1;
+			z += 0.1;
 		}
-		if ((newLocation.X == 120) && (newLocation.Y == -40) && (newLocation.Z == -53))
+		if ((newLocation.X >= 15.0) && (newLocation.Y <= -1.0) && (newLocation.Z >= -4.0)) {
 			spawnCard = false;
+		}
 		attachPoint_->SetRelativeLocation(newLocation);
 	}
 
 	if (despawnCard) {
-		FVector newLocation = FVector(120.0 + x, -40.0 + y, -53.0 + z);
-		if (newLocation.X > 50) {
-			newLocation.X -= 1;
-			x--;
+		FVector newLocation = FVector(15.0 + x, -1.0 + y, -4.0 + z);
+		if (newLocation.X > 10.0) {
+			newLocation.X -= 0.1;
+			x -= 0.1;
 		}
-		if (newLocation.Y < -10) {
-			newLocation.Y += 1;
-			y++;
+		if (newLocation.Y < 0.0) {
+			newLocation.Y += 0.1;
+			y += 0.1;
 		}
-		if (newLocation.Z > -200) {
-			newLocation.Z -= 1;
-			z--;
+		if (newLocation.Z > -15.0) {
+			newLocation.Z -= 0.1;
+			z -= 0.1;
 		}
-		if ((newLocation.X == 50) && (newLocation.Y == -10) && (newLocation.Z == -200)) {
+		if ((newLocation.X <= 10.0) && (newLocation.Y >= 0.0) && (newLocation.Z <= -15.0)) {
 			despawnCard = false;
 			attachPoint_->SetRelativeRotation(FRotator(0.0, 90.0, 0.0));
 		}
@@ -159,7 +160,6 @@ void APlayerPawn::RotateRight() {
 	}
 }
 
-
 void APlayerPawn::RotateLeft() {
 	if (!cameraMoving) {
 		cameraInput = 1;
@@ -171,20 +171,16 @@ void APlayerPawn::RotateLeft() {
 void APlayerPawn::SpawnCard() {
 	card->SelectCard();
 	spawnCard = true;
-	spawnedCard = true;
 	x = 0;
 	y = 0;
 	z = 0;
 }
 
 void APlayerPawn::DespawnCard() {
-	if (spawnedCard) {
-		despawnCard = true;
-		x = 0;
-		y = 0;
-		z = 0;
-		spawnedCard = false;
-	}
+	despawnCard = true;
+	x = 0;
+	y = 0;
+	z = 0;
 }
 
 void APlayerPawn::RotateCard() {

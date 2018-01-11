@@ -35,14 +35,15 @@ protected:
 
 	bool cameraMoving;
 	bool spawnCard;
+	bool spawnedCard;
 	bool despawnCard;
 	bool rotateCard;
 	float cameraInput;
 	float count;
-	float x;
-	float y;
-	float z;
-	float ry;
+	int x;
+	int y;
+	int z;
+	int ry;
 
 public:	
 	// Called every frame

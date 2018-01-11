@@ -74,8 +74,8 @@ public:
 	void chooseCard(FString message);
 
 	UFUNCTION(BlueprintCallable)
-	void despawnCard();
+		void despawnCard();
 
 	UFUNCTION(BlueprintCallable)
-	void rotateCard();
+		void rotateCard();
 };
