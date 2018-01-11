@@ -465,7 +465,8 @@ void ACheckerboardManager::takePiece(ACheckerPiece* checkerPiece) {
 	int x = checkerPiece->getX();
 	int y = checkerPiece->getY();
 	checkerPieceArray[x][y] = nullptr;
-	checkerPiece->Destroy();
+	checkerPiece->taken();
+	//checkerPiece->Destroy();
 	GameManager->getUI()->chooseCard(FString("Do you want this card?"));
 	playerPawn->SpawnCard();
 }

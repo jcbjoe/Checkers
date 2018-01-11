@@ -7,6 +7,8 @@
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine.h"
+#include "DestructibleComponent.h"
+#include "DestructibleMesh.h"
 #include "CheckerPiece.generated.h"
 
 class ACheckerboardManager;
@@ -23,6 +25,9 @@ public:
 	UStaticMeshComponent* checkerPieceMesh_;
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* checkerPieceKingMesh_;
+
+	UDestructibleComponent* destructive;
+	UDestructibleMesh* destructableMesh;
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,6 +58,8 @@ public:
 	void setXY(int, int);
 	
 	void makeKing();
+
+	void taken();
 
 private:
 
