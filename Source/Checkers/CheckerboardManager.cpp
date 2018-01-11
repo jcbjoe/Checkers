@@ -378,10 +378,5 @@ void ACheckerboardManager::takePiece(ACheckerPiece* checkerPiece) {
 	checkerPieceArray[x][y] = nullptr;
 	checkerPiece->Destroy();
 	GameManager->getUI()->chooseCard(FString("Do you want this card?"));
-	//GameManager->getUI()->setAlertMessage(FString("Do you want this card?"), 5);
 	playerPawn->SpawnCard();
-}
-
-void ACheckerboardManager::createCard() {
-	ACard* card = GetWorld()->SpawnActor<ACard>(ACard::StaticClass(), FVector(3350, -550, 1500.0), FRotator(0.0, 45.0, 45.0), FActorSpawnParameters());
 }

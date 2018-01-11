@@ -59,5 +59,6 @@ void UMyUserWidget::rotateCard() {
 }
 
 void UMyUserWidget::despawnCard() {
+	hidden = false;
 	playerPawn->DespawnCard();
 }

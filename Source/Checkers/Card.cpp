@@ -28,16 +28,34 @@ void ACard::BeginPlay()
 void ACard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
 
-	if (GetActorLocation().Z < 2700) {
-		FVector NewLocation = GetActorLocation();
-		NewLocation.Z += 500 * DeltaTime;
-		SetActorLocation(NewLocation);
+void ACard::SelectCard() {
+	int card = rand() % 100;
+	int effect = rand() % 100;
+
+	if ((card >= 0) && (card <= 75)) {
+		//Good Effect
+		if ((effect >= 0) && (effect <= 9)) {
+			//Get a King
+		}
+		if ((effect >= 10) && (effect <= 79)) {
+			//Extra Move
+		}
+		if ((effect >= 80) && (effect <= 99)) {
+			//King for a Turn
+		}
 	}
-	else {
-		if (!attached) {
-			((AMyPlayerController*)(UGameplayStatics::GetPlayerController(GetWorld(), 0)))->attachCard(this);
+	else if ((card >= 76) && (card <= 100)) {
+		//Bad Effect
+		if ((effect >= 0) && (effect <= 9)) {
+			//Give Opponent King
+		}
+		if ((effect >= 10) && (effect <= 89)) {
+			//Miss Next Turn
+		}
+		if ((effect >= 90) && (effect <= 99)) {
+			//Lose Random Piece
 		}
 	}
 }
-

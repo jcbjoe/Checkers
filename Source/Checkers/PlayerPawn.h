@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Card.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h"
@@ -32,8 +33,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UCameraComponent* OurCamera;
 
+	ACard* card;
+
 	bool cameraMoving;
 	bool spawnCard;
+	bool spawnedCard;
 	bool despawnCard;
 	bool rotateCard;
 	float cameraInput;

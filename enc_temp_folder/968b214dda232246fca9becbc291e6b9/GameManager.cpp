@@ -16,6 +16,8 @@ AGameManager::AGameManager(): lastSecond(0), playerTimerOn(false), playerTimerCu
 void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	playerPawn = (APlayerPawn*)((AMyPlayerController*)(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetPawn());
 	
 	checkerBoardManager = GetWorld()->SpawnActor<ACheckerboardManager>(FVector(0), FRotator(0), FActorSpawnParameters());
 
@@ -80,7 +82,7 @@ void AGameManager::startTurn() {
 }
 
 void AGameManager::endTurn() {
-	getUI()->despawnCard();
+	playerPawn->DespawnCard();
 	if (playersTurn == 0) {
 		playersTurn = 1;
 		getUI()->setPlayer1Time(FString::FromInt(0));

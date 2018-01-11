@@ -54,6 +54,10 @@ void UMyUserWidget::chooseCard(FString message) {
 
 }
 
+void UMyUserWidget::rotateCard() {
+	playerPawn->RotateCard();
+}
+
 void UMyUserWidget::despawnCard() {
 	playerPawn->DespawnCard();
 }

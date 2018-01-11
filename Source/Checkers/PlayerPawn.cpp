@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PlayerPawn.h"
+#include "GameManager.h"
 
 
 // Sets default values
@@ -53,6 +54,8 @@ void APlayerPawn::BeginPlay()
 	Super::BeginPlay();
 
 	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
+
+	card = (ACard*)((AMyPlayerController*)(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetPawn());
 
 	MyController->bShowMouseCursor = true;
 
@@ -169,17 +172,22 @@ void APlayerPawn::RotateLeft() {
 }
 
 void APlayerPawn::SpawnCard() {
+	card->SelectCard();
 	spawnCard = true;
+	spawnedCard = true;
 	x = 0;
 	y = 0;
 	z = 0;
 }
 
 void APlayerPawn::DespawnCard() {
-	despawnCard = true;
-	x = 0;
-	y = 0;
-	z = 0;
+	if (spawnedCard) {
+		despawnCard = true;
+		x = 0;
+		y = 0;
+		z = 0;
+		spawnedCard = false;
+	}
 }
 
 void APlayerPawn::RotateCard() {
