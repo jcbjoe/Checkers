@@ -5,7 +5,7 @@
 
 
 // Sets default values
-APlayerPawn::APlayerPawn(): cameraMoving(false), spawnCard(false), spawnedCard(false), despawnCard(false), rotateCard(false)
+APlayerPawn::APlayerPawn(): cameraMoving(false), spawnCard(false), spawnedCard(false), despawnCard(false), rotateCard(false), type(0)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,9 +30,9 @@ APlayerPawn::APlayerPawn(): cameraMoving(false), spawnCard(false), spawnedCard(f
 	OurCameraSpringArm->bDoCollisionTest = false;
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Card/Low_Poly_Card.Low_Poly_Card'"));
-	attachPoint_ = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AttachPoint"));
-	attachPoint_->SetStaticMesh(gridMesh.Object);
-	attachPoint_->SetupAttachment(OurCameraSpringArm, USpringArmComponent::SocketName);
+	card_ = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AttachPoint"));
+	card_->SetStaticMesh(gridMesh.Object);
+	card_->SetupAttachment(OurCameraSpringArm, USpringArmComponent::SocketName);
 
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("GameCamera"));
 
@@ -44,7 +44,34 @@ APlayerPawn::APlayerPawn(): cameraMoving(false), spawnCard(false), spawnedCard(f
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
+	initMaterials();
 }
+
+void APlayerPawn::initMaterials() {
+
+	ConstructorHelpers::FObjectFinder<UMaterial> getAKingCardMat(TEXT("Material'/Game/Models/Card/materials/GetAKing/GetAKingMat.GetAKingMat'"));
+	getAKingCard = getAKingCardMat.Object;
+	ConstructorHelpers::FObjectFinder<UMaterial> getAKingCardFrontMat(TEXT("Material'/Game/Models/Card/materials/GetAKing/getAKingMat2.getAKingMat2'"));
+	getAKingCardFront = getAKingCardFrontMat.Object;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> extraMoveCardMat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
+	extraMoveCard = extraMoveCardMat.Object;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> kingForATurnCardMat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
+	kingForATurnCard = kingForATurnCardMat.Object;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> GiveOpponentKingCardMat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
+	GiveOpponentKingCard = GiveOpponentKingCardMat.Object;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> missNextTurnCardMat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
+	missNextTurnCard = missNextTurnCardMat.Object;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> loseRandomPieceCardMat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
+	loseRandomPieceCard = loseRandomPieceCardMat.Object;
+
+
+}
+
 
 // Called when the game starts or when spawned
 void APlayerPawn::BeginPlay()
@@ -69,7 +96,7 @@ void APlayerPawn::BeginPlay()
 
 	this->SetActorLocationAndRotation(startLocation, Rotation);
 	
-	attachPoint_->SetRelativeLocationAndRotation(FVector(10.f, 0.f, -15.f), FRotator(0.0f, 90.0f, 0.0f));
+	card_->SetRelativeLocationAndRotation(FVector(10.f, 0.f, -15.f), FRotator(0.0f, 90.0f, 0.0f));
 }
 
 // Called every frame
@@ -107,7 +134,7 @@ void APlayerPawn::Tick(float DeltaTime)
 		if ((newLocation.X >= 15.0) && (newLocation.Y <= -1.0) && (newLocation.Z >= -4.0)) {
 			spawnCard = false;
 		}
-		attachPoint_->SetRelativeLocation(newLocation);
+		card_->SetRelativeLocation(newLocation);
 	}
 
 	if (despawnCard) {
@@ -126,9 +153,9 @@ void APlayerPawn::Tick(float DeltaTime)
 		}
 		if ((newLocation.X <= 10.0) && (newLocation.Y >= 0.0) && (newLocation.Z <= -15.0)) {
 			despawnCard = false;
-			attachPoint_->SetRelativeRotation(FRotator(0.0, 90.0, 0.0));
+			card_->SetRelativeRotation(FRotator(0.0, 90.0, 0.0));
 		}
-		attachPoint_->SetRelativeLocation(newLocation);
+		card_->SetRelativeLocation(newLocation);
 	}
 
 	if (rotateCard) {
@@ -139,7 +166,7 @@ void APlayerPawn::Tick(float DeltaTime)
 		}
 		if (newRotation.Yaw == 260)
 			rotateCard = false;
-		attachPoint_->SetRelativeRotation(newRotation);
+		card_->SetRelativeRotation(newRotation);
 	}
 }
 
@@ -169,12 +196,13 @@ void APlayerPawn::RotateLeft() {
 }
 
 void APlayerPawn::SpawnCard() {
-	card->SelectCard();
+	SelectCard();
 	spawnCard = true;
 	spawnedCard = true;
 	x = 0;
 	y = 0;
 	z = 0;
+
 }
 
 void APlayerPawn::DespawnCard() {
@@ -190,4 +218,47 @@ void APlayerPawn::DespawnCard() {
 void APlayerPawn::RotateCard() {
 	rotateCard = true;
 	ry = 0;
+}
+
+void APlayerPawn::SelectCard() {
+	int card = rand() % 100;
+	int effect = rand() % 100;
+
+	//if ((card >= 0) && (card <= 75)) {
+	//	//Good Effect
+	//	if ((effect >= 0) && (effect <= 9)) {
+			//Get a King
+			card_->SetMaterial(1, getAKingCard);
+			card_->SetMaterial(0, getAKingCardFront);
+			type = 1;
+	//	}
+	//	if ((effect >= 10) && (effect <= 79)) {
+	//		//Extra Move
+	//		card_->SetMaterial(0, extraMoveCard);
+	//		type = 2;
+	//	}
+	//	if ((effect >= 80) && (effect <= 99)) {
+	//		//King for a Turn
+	//		card_->SetMaterial(0, kingForATurnCard);
+	//		type = 3;
+	//	}
+	//}
+	//else if ((card >= 76) && (card <= 100)) {
+	//	//Bad Effect
+	//	if ((effect >= 0) && (effect <= 9)) {
+	//		//Give Opponent King
+	//		card_->SetMaterial(0, GiveOpponentKingCard);
+	//		type = 4;
+	//	}
+	//	if ((effect >= 10) && (effect <= 89)) {
+	//		//Miss Next Turn
+	//		card_->SetMaterial(0, missNextTurnCard);
+	//		type = 5;
+	//	}
+	//	if ((effect >= 90) && (effect <= 99)) {
+	//		//Lose Random Piece
+	//		card_->SetMaterial(0, loseRandomPieceCard);
+	//		type = 6;
+	//	}
+	//}
 }

@@ -499,3 +499,20 @@ bool ACheckerboardManager::canThisPieceBeMoved(AGridPiece* gridPiece) {
 	return returnVar;
 
 }
+
+ACheckerPiece* ACheckerboardManager::randomPiece() {
+	vector<ACheckerPiece*> pieces;
+	for (int x = 0; x < GRID_SIZE; x++) {
+		for (int y = 0; y < GRID_SIZE; y++) {
+			if (hasPieceOnTop(gridPieceArray[x][y])) {
+				ACheckerPiece* piece = checkerPieceArray[x][y];
+				if (piece->getPlayer() == GameManager->getCurrentPlayer()) {
+					pieces.push_back(piece);
+				}
+			}
+		}
+	}
+
+	int Random = rand() % pieces.size();
+	return pieces.at(Random);
+}

@@ -61,6 +61,8 @@ public:
 
 	void taken();
 
+	void randomPiece();
+
 private:
 
 	UMaterial* player1Material_;

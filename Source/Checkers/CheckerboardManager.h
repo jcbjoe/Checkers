@@ -95,4 +95,7 @@ private:
 	bool canThisPieceBeMoved(AGridPiece* );
 
 	vector<vector<AGridPiece*>> canBeMovedArray;
+
+	ACheckerPiece* randomPiece();
+
 };

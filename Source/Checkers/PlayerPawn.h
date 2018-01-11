@@ -20,7 +20,7 @@ public:
 	// Sets default values for this pawn's properties
 	APlayerPawn();
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* attachPoint_;
+	UStaticMeshComponent* card_;
 
 protected:
 	// Called when the game starts or when spawned
@@ -44,6 +44,22 @@ protected:
 	float y;
 	float z;
 	float ry;
+
+	void SelectCard();
+
+	void initMaterials();
+
+	//Good
+	UMaterial* getAKingCard;
+	UMaterial* getAKingCardFront;
+	UMaterial* extraMoveCard;
+	UMaterial* kingForATurnCard;
+	//Bad
+	UMaterial* GiveOpponentKingCard;
+	UMaterial* missNextTurnCard;
+	UMaterial* loseRandomPieceCard;
+
+	int type;
 
 public:	
 	// Called every frame
