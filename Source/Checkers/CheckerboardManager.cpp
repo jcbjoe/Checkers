@@ -18,6 +18,7 @@ void ACheckerboardManager::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	playerPawn = (APlayerPawn*)((AMyPlayerController*)(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetPawn());
 }
 
 void ACheckerboardManager::initManager(AGameManager* GM) {
@@ -465,6 +466,8 @@ void ACheckerboardManager::takePiece(ACheckerPiece* checkerPiece) {
 	int y = checkerPiece->getY();
 	checkerPieceArray[x][y] = nullptr;
 	checkerPiece->Destroy();
+	GameManager->getUI()->chooseCard(FString("Do you want this card?"));
+	playerPawn->SpawnCard();
 }
 
 
