@@ -63,7 +63,7 @@ void APlayerPawn::BeginPlay()
 
 
 
-	FRotator Rotation(0.0f, 0.0f, 0.0f);
+	FRotator Rotation(0.0f, 45.0f, 0.0f);
 
 	FVector startLocation(27.621824f, 36.829102f, 80.358833f);
 
