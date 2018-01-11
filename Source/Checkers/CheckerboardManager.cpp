@@ -351,7 +351,7 @@ void ACheckerboardManager::createCheckerboard() {
 		for (int j = 0; j < GRID_SIZE; j++) {
 			//--- Spawn grid piece
 			auto world = GetWorld();
-			AGridPiece* gridPiece_ = GetWorld()->SpawnActor<AGridPiece>(AGridPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 80.358833), FRotator(0.0, 0.0, 0.0), FActorSpawnParameters());
+			AGridPiece* gridPiece_ = GetWorld()->SpawnActor<AGridPiece>(AGridPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 107.611404), FRotator(0.0, 0.0, 0.0), FActorSpawnParameters());
 			int newX = GRID_SIZE - i - 1;
 			if (colourChanger) 
 				gridPiece_->passVariables(newX, j, 0, this);
@@ -368,12 +368,12 @@ void ACheckerboardManager::createCheckerboard() {
 				//UE_LOG(LogTemp, Warning, TEXT("Given X: ") + FString::FromInt(newX) + TEXT("Given Y: ") + FString::FromInt(y));
 				ACheckerPiece* checkerPiece_;
 				if (i == 0 || i == 1 || i == 2) {
-					checkerPiece_ = GetWorld()->SpawnActor<ACheckerPiece>(ACheckerPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 81.445213), FRotator(0, -90, 90), FActorSpawnParameters());
+					checkerPiece_ = GetWorld()->SpawnActor<ACheckerPiece>(ACheckerPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 108.697784), FRotator(0, -90, 90), FActorSpawnParameters());
 					checkerPieceArray[newX][j] = checkerPiece_;
 					//--- Player 0
 					checkerPiece_->passVariables(newX, j, 0, this);
 				} else {
-					checkerPiece_ = GetWorld()->SpawnActor<ACheckerPiece>(ACheckerPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 81.445213), FRotator(0, 90, 90), FActorSpawnParameters());
+					checkerPiece_ = GetWorld()->SpawnActor<ACheckerPiece>(ACheckerPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 108.697784), FRotator(0, 90, 90), FActorSpawnParameters());
 					checkerPieceArray[newX][j] = checkerPiece_;
 					//--- Player 1
 					checkerPiece_->passVariables(newX, j, 1, this);
