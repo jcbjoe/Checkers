@@ -74,13 +74,12 @@ void AGameManager::tickTimer() {
 }
 
 void AGameManager::startTurn() {
-	getUI()->setCurrentPlayer(playersTurn);
+	getUI()->setCurrentPlayer(FString::FromInt(playersTurn));
 	playerTimerCurrentSeconds = 0;
 	playerTimerOn = true;
 }
 
 void AGameManager::endTurn() {
-	getUI()->despawnCard();
 	if (playersTurn == 0) {
 		playersTurn = 1;
 		getUI()->setPlayer1Time(FString::FromInt(0));
