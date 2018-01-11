@@ -54,6 +54,7 @@ void AGameManager::tickTimer() {
 		if (playerTimerOn) {
 			if (playerTimerCurrentSeconds > 30) {
 				playerTimerOn = false;
+				//getUI()->despawnCard();
 				endTurn();
 			}
 			if (playersTurn == 0)
@@ -80,7 +81,6 @@ void AGameManager::startTurn() {
 }
 
 void AGameManager::endTurn() {
-	getUI()->despawnCard();
 	if (playersTurn == 0) {
 		playersTurn = 1;
 		getUI()->setPlayer1Time(FString::FromInt(0));

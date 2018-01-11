@@ -40,10 +40,10 @@ protected:
 	bool rotateCard;
 	float cameraInput;
 	float count;
-	int x;
-	int y;
-	int z;
-	int ry;
+	float x;
+	float y;
+	float z;
+	float ry;
 
 public:	
 	// Called every frame
