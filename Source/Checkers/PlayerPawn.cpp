@@ -57,7 +57,7 @@ void APlayerPawn::initMaterials() {
 	extraMoveCard = extraMoveCardMat.Object;
 
 	ConstructorHelpers::FObjectFinder<UMaterial> enemyLoosesRandomPiece(TEXT("Material'/Game/Models/Card/New/Materials/Textures/oponentLoosesRandomPiece.oponentLoosesRandomPiece'"));
-	kingForATurnCard = enemyLoosesRandomPiece.Object;
+	oponentLoosesRandomPieceMat = enemyLoosesRandomPiece.Object;
 
 	ConstructorHelpers::FObjectFinder<UMaterial> GiveOpponentKingCardMat(TEXT("Material'/Game/Models/Card/New/Materials/Textures/giveYourOponentKing.giveYourOponentKing'"));
 	GiveOpponentKingCard = GiveOpponentKingCardMat.Object;
@@ -223,49 +223,48 @@ void APlayerPawn::DespawnCard() {
 void APlayerPawn::RotateCard() {
 	rotateCard = true;
 	ry = 0;
-	startTimer();
 }
 
 void APlayerPawn::SelectCard() {
 	int card = rand() % 100;
 	int effect = rand() % 100;
 
-	//if ((card >= 0) && (card <= 75)) {
-	//	//Good Effect
-	//	if ((effect >= 0) && (effect <= 9)) {
+	if ((card >= 0) && (card <= 75)) {
+		//Good Effect
+		if ((effect >= 0) && (effect <= 9)) {
 			//Get a King
 			card_->SetMaterial(0, getAKingCard);
 			type = 1;
-	//	}
-	//	if ((effect >= 10) && (effect <= 79)) {
-	//		//Extra Move
-	//		card_->SetMaterial(0, extraMoveCard);
-	//		type = 2;
-	//	}
-	//	if ((effect >= 80) && (effect <= 99)) {
-	//		//King for a Turn
-	//		card_->SetMaterial(0, kingForATurnCard);
-	//		type = 3;
-	//	}
-	//}
-	//else if ((card >= 76) && (card <= 100)) {
-	//	//Bad Effect
-	//	if ((effect >= 0) && (effect <= 9)) {
-	//		//Give Opponent King
+		}
+		if ((effect >= 10) && (effect <= 79)) {
+			//Extra Move
+			card_->SetMaterial(0, extraMoveCard);
+			type = 2;
+		}
+		if ((effect >= 80) && (effect <= 99)) {
+			//Remove a random enemys piece
+			card_->SetMaterial(0, oponentLoosesRandomPieceMat);
+			type = 3;
+		}
+	}
+	else if ((card >= 76) && (card <= 100)) {
+		//Bad Effect
+		if ((effect >= 0) && (effect <= 9)) {
+			//Give Opponent King
 			card_->SetMaterial(0, GiveOpponentKingCard);
 			type = 4;
-	//	}
-	//	if ((effect >= 10) && (effect <= 89)) {
-	//		//Miss Next Turn
-	//		card_->SetMaterial(0, missNextTurnCard);
-	//		type = 5;
-	//	}
-	//	if ((effect >= 90) && (effect <= 99)) {
-	//		//Lose Random Piece
-	//		card_->SetMaterial(0, loseRandomPieceCard);
-	//		type = 6;
-	//	}
-	//}
+		}
+		if ((effect >= 10) && (effect <= 89)) {
+			//Miss Next Turn
+			card_->SetMaterial(0, missNextTurnCard);
+			type = 5;
+		}
+		if ((effect >= 90) && (effect <= 99)) {
+			//Lose Random Piece
+			card_->SetMaterial(0, loseRandomPieceCard);
+			type = 6;
+		}
+	}
 }
 
 void APlayerPawn::setGameManager(AGameManager* man) {
@@ -312,15 +311,18 @@ void APlayerPawn::executeCardAbility() {
 			notKings = GameManager->getCheckerboardManager()->findNotKing(GameManager->getCurrentPlayer());
 			random = rand() % notKings.size();
 			notKings.at(random)->makeKing();
+			GameManager->getUI()->setAlertMessage("You have been given a king!", 5);
 			break;
 		//ExtraMove
 		case 2:
 			extraMove = true;
+			GameManager->getUI()->setAlertMessage("You have been given an extra turn!", 5);
 			break;
 		//Enemy looses random piece
 		case 3:
 			piece = GameManager->getCheckerboardManager()->randomPiece(enemy);
 			GameManager->getCheckerboardManager()->takePieceRemote(piece);
+			GameManager->getUI()->setAlertMessage("A Remove a random enemy piece!", 5);
 			break;
 	//Bad
 		//Give oponent king
@@ -328,6 +330,7 @@ void APlayerPawn::executeCardAbility() {
 			notKings = GameManager->getCheckerboardManager()->findNotKing(GameManager->getOtherPlayer());
 			random = rand() % notKings.size();
 			notKings.at(random)->makeKing();
+			GameManager->getUI()->setAlertMessage("The opponent has been given a king!", 5);
 			break;
 		//Miss next turn
 		case 5:
@@ -336,11 +339,13 @@ void APlayerPawn::executeCardAbility() {
 			} else {
 				GameManager->setPlayer1MissTurn(true);
 			}
+			GameManager->getUI()->setAlertMessage("Miss your next turn!", 5);
 			break;
 		//Lose random piece
 		case 6:
 			piece = GameManager->getCheckerboardManager()->randomPiece(currentPlayer);
 			GameManager->getCheckerboardManager()->takePieceRemote(piece);
+			GameManager->getUI()->setAlertMessage("Loose a random piece!", 5);
 			break;
 	}
 }

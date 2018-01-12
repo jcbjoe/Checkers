@@ -90,4 +90,6 @@ public:
 	void rotateCard();
 
 	void showEnd(int player);
+
+	void turnOffAlert();
 };

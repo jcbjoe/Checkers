@@ -42,6 +42,13 @@ void UMyUserWidget::setAlertMessage(FString message, int displayTime) {
 
 	showAlertMessage = true;
 
+	FTimerHandle UnusedHandle;
+	playerPawn->GetWorldTimerManager().SetTimer(UnusedHandle, this, &UMyUserWidget::turnOffAlert, delayTime, false);
+
+}
+
+void UMyUserWidget::turnOffAlert() {
+	showAlertMessage = false;
 }
 
 void UMyUserWidget::spawnCardText() {
