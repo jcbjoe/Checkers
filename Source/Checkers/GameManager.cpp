@@ -5,7 +5,7 @@
 
 
 // Sets default values
-AGameManager::AGameManager(): lastSecond(0), playerTimerOn(false), playerTimerCurrentSeconds(0)
+AGameManager::AGameManager(): lastSecond(0), playerTimerOn(false), playerTimerCurrentSeconds(0), paused(false), inCardMenu(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -25,6 +25,8 @@ void AGameManager::BeginPlay()
 	playersTurn = FMath::RandRange(0, 1);
 
 	startTurn();
+
+	((APlayerPawn*)((AMyPlayerController*)(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetPawn()))->setGameManager(this);
 }
 
 // Called every frame
@@ -51,7 +53,7 @@ void AGameManager::tickTimer() {
 
 		seconds++;
 
-		if (playerTimerOn) {
+		if (playerTimerOn && !paused) {
 			if (playerTimerCurrentSeconds > 30) {
 				playerTimerOn = false;
 				//getUI()->despawnCard();
@@ -93,4 +95,18 @@ void AGameManager::endTurn() {
 
 int AGameManager::getCurrentPlayer() {
 	return playersTurn;
+}
+
+void AGameManager::PauseTimer(bool pause) {
+	paused = pause;
+}
+
+bool AGameManager::isInCardMenu() {
+
+	return inCardMenu;
+
+}
+
+void AGameManager::setIsInCardMenu(bool val) {
+	inCardMenu = val;
 }

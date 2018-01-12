@@ -18,6 +18,7 @@ class CHECKERS_API UMyUserWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
+
 	APlayerPawn* playerPawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
@@ -56,6 +57,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
 	bool buttonPressed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	bool showNotYourPiece;
+
 	
 	void setPlayer1Time(FString time);
 
@@ -71,7 +75,9 @@ public:
 
 	void setAlertMessage(FString message, int displayTime);
 
-	void chooseCard(FString message);
+	void spawnCardText();
+
+	void setShowNotYourPiece(bool show);
 
 	UFUNCTION(BlueprintCallable)
 	void despawnCard();

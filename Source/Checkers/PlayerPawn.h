@@ -9,7 +9,10 @@
 #include "Runtime/Engine/Classes/GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
 #include "Components/StaticMeshComponent.h"
+#include "Runtime/Engine/Classes/Components/PointLightComponent.h"
 #include "PlayerPawn.generated.h"
+
+class AGameManager;
 
 UCLASS()
 class CHECKERS_API APlayerPawn : public APawn
@@ -22,6 +25,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* card_;
 
+	void setGameManager(AGameManager* man);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -30,8 +35,6 @@ protected:
 	USpringArmComponent* OurCameraSpringArm;
 	UPROPERTY(EditAnywhere)
 	UCameraComponent* OurCamera;
-
-	ACard* card;
 
 	bool cameraMoving;
 	bool spawnCard;
@@ -73,4 +76,9 @@ public:
 	void SpawnCard();
 	void DespawnCard();
 	void RotateCard();
+	UPROPERTY(EditAnywhere)
+	UPointLightComponent* MyLight;
+
+private:
+	AGameManager* GameManager;
 };

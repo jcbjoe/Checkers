@@ -44,11 +44,7 @@ void UMyUserWidget::setAlertMessage(FString message, int displayTime) {
 
 }
 
-void UMyUserWidget::chooseCard(FString message) {
-
-	AlertMessage = message;
-
-	showAlertMessage = true;
+void UMyUserWidget::spawnCardText() {
 
 	hidden = true;
 
@@ -56,9 +52,15 @@ void UMyUserWidget::chooseCard(FString message) {
 
 void UMyUserWidget::rotateCard() {
 	playerPawn->RotateCard();
+
 }
 
 void UMyUserWidget::despawnCard() {
 	hidden = false;
 	playerPawn->DespawnCard();
+
+}
+
+void UMyUserWidget::setShowNotYourPiece(bool show) {
+	showNotYourPiece = show;
 }

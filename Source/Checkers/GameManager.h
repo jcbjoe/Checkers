@@ -33,6 +33,12 @@ public:
 
 	void endTurn();
 
+	void PauseTimer(bool pause);
+
+	bool isInCardMenu();
+
+	void setIsInCardMenu(bool val);
+
 private:
 	int lastSecond;
 
@@ -50,5 +56,9 @@ private:
 
 	bool playerTimerOn;
 	int playerTimerCurrentSeconds;
+
+	bool paused;
+
+	bool inCardMenu;
 
 };

@@ -38,7 +38,7 @@ APlayerPawn::APlayerPawn(): cameraMoving(false), spawnCard(false), spawnedCard(f
 
 	OurCamera->SetupAttachment(OurCameraSpringArm, USpringArmComponent::SocketName);
 
-
+	MyLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("MyLight"));
 
 	//Take control of the default Player
 
@@ -80,8 +80,6 @@ void APlayerPawn::BeginPlay()
 
 	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
 
-	card = (ACard*)((AMyPlayerController*)(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetPawn());
-
 	MyController->bShowMouseCursor = true;
 
 	MyController->bEnableClickEvents = true;
@@ -97,6 +95,11 @@ void APlayerPawn::BeginPlay()
 	this->SetActorLocationAndRotation(startLocation, Rotation);
 	
 	card_->SetRelativeLocationAndRotation(FVector(10.f, 0.f, -15.f), FRotator(0.0f, 90.0f, 0.0f));
+
+	MyLight->SetRelativeLocationAndRotation(FVector(-1.824101, -65.448853, 75.227783), FRotator(0,0,45));
+	MyLight->SetIntensity(0);
+	MyLight->SetAttenuationRadius(102);
+	MyLight->AttachTo(RootComponent);
 }
 
 // Called every frame
@@ -202,6 +205,7 @@ void APlayerPawn::SpawnCard() {
 	x = 0;
 	y = 0;
 	z = 0;
+	MyLight->SetIntensity(300);
 
 }
 
@@ -212,12 +216,17 @@ void APlayerPawn::DespawnCard() {
 		y = 0;
 		z = 0;
 		spawnCard = false;
+		MyLight->SetIntensity(0);
+		GameManager->PauseTimer(false);
+		GameManager->setIsInCardMenu(false);
 	}
 }
 
 void APlayerPawn::RotateCard() {
 	rotateCard = true;
 	ry = 0;
+	GameManager->PauseTimer(false);
+	GameManager->setIsInCardMenu(false);
 }
 
 void APlayerPawn::SelectCard() {
@@ -261,4 +270,8 @@ void APlayerPawn::SelectCard() {
 	//		type = 6;
 	//	}
 	//}
+}
+
+void APlayerPawn::setGameManager(AGameManager* man) {
+	GameManager = man;
 }

@@ -66,7 +66,7 @@ void ACheckerboardManager::Tick(float DeltaTime)
 						}
 					}
 				}
-				if (takingPiece) {
+				if (takingPiece && !(GameManager->isInCardMenu())) {
 					vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(pieceToMoveTo);
 					if (isThereAPieceCanTake(possibleMovesForSelectedGrid)) {
 						showPossibleMoves(pieceToMoveTo);
@@ -108,20 +108,15 @@ void ACheckerboardManager::onClicked(int x, int y) {
 				AGridPiece* oldSelectedGridPiece = getGridPieceAt(selectedX, selectedY);
 				//--- Grab new selected grid piece
 
-				UE_LOG(LogTemp, Warning, TEXT("SelectingAt X: %d SelectingAt Y: %d"), x, y);
-
 				AGridPiece* newSelected = getGridPieceAt(x, y);
-				GameManager->getUI()->setAlertMessage(FString("X: ") + FString::FromInt(x) + FString("y:") + FString::FromInt(y), 5);
 				if (hasPieceOnTop(newSelected)) {
 					//--- Grab our new checker piece
 					ACheckerPiece* checkerPiece = getCheckerPieceAt(x, y);
 
 					if (checkerPiece->getPlayer() != GameManager->getCurrentPlayer()) {
-						//Display Message saying not piece
-						GameManager->getUI()->setAlertMessage(FString("This is not your piece!"), 5);
-					}
-					else {
-
+						GameManager->getUI()->setShowNotYourPiece(true);
+					} else {
+						GameManager->getUI()->setShowNotYourPiece(false);
 						oldSelectedGridPiece->setSelected(false);
 
 						//--- Change selected vars
@@ -363,9 +358,6 @@ void ACheckerboardManager::createCheckerboard() {
 			if ((i == 0 || i == 1 || i == 2 || i == (GRID_SIZE - 1) || i == (GRID_SIZE - 2) || i == (GRID_SIZE - 3)) && colourChanger) {
 				//--- Spawn player pieces
 
-
-				UE_LOG(LogTemp, Warning, TEXT("Given X: %d Given Y: %d"), newX, j);
-				//UE_LOG(LogTemp, Warning, TEXT("Given X: ") + FString::FromInt(newX) + TEXT("Given Y: ") + FString::FromInt(y));
 				ACheckerPiece* checkerPiece_;
 				if (i == 0 || i == 1 || i == 2) {
 					checkerPiece_ = GetWorld()->SpawnActor<ACheckerPiece>(ACheckerPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 108.697784), FRotator(0, -90, 90), FActorSpawnParameters());
@@ -378,7 +370,6 @@ void ACheckerboardManager::createCheckerboard() {
 					//--- Player 1
 					checkerPiece_->passVariables(newX, j, 1, this);
 				}
-				UE_LOG(LogTemp, Warning, TEXT("Actual X: %d Actual Y: %d"), checkerPiece_->getX(), checkerPiece_->getY());
 			} else {
 				checkerPieceArray[newX][j] = nullptr;
 			}
@@ -467,8 +458,10 @@ void ACheckerboardManager::takePiece(ACheckerPiece* checkerPiece) {
 	checkerPieceArray[x][y] = nullptr;
 	checkerPiece->taken();
 	//checkerPiece->Destroy();
-	GameManager->getUI()->chooseCard(FString("Do you want this card?"));
 	playerPawn->SpawnCard();
+	GameManager->getUI()->spawnCardText();
+	GameManager->PauseTimer(true);
+	GameManager->setIsInCardMenu(true);
 }
 
 
