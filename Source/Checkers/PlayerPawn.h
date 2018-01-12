@@ -54,9 +54,8 @@ protected:
 
 	//Good
 	UMaterial* getAKingCard;
-	UMaterial* getAKingCardFront;
 	UMaterial* extraMoveCard;
-	UMaterial* kingForATurnCard;
+	UMaterial* oponentLoosesRandomPieceMat;
 	//Bad
 	UMaterial* GiveOpponentKingCard;
 	UMaterial* missNextTurnCard;
