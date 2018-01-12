@@ -317,6 +317,7 @@ void APlayerPawn::executeCardAbility() {
 		case 2:
 			extraMove = true;
 			GameManager->getUI()->setAlertMessage("You have been given an extra turn!", 5);
+			GameManager->resetTimer();
 			break;
 		//Enemy looses random piece
 		case 3:

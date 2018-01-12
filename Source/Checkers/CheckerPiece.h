@@ -83,4 +83,6 @@ private:
 
 	void initEvents();
 	void initMaterials();
+
+	void removeDebris();
 };

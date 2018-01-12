@@ -528,6 +528,8 @@ void ACheckerboardManager::endTurnManager() {
 		}
 		else {
 			GameManager->endTurn();
+
+			gridPieceArray[selectedX][selectedY]->setSelected(false);
 		}
 
 	} else {

@@ -52,6 +52,8 @@ public:
 
 	void endGame();
 
+	void resetTimer();
+
 private:
 	int lastSecond;
 
@@ -76,4 +78,5 @@ private:
 
 	bool player0MissTurn;
 	bool player1MissTurn;
+
 };

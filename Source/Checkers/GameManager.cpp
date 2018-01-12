@@ -145,3 +145,7 @@ bool AGameManager::isPlayer1MissingTurn() {
 void AGameManager::endGame() {
 	getUI()->showEnd(getCurrentPlayer());
 }
+
+void AGameManager::resetTimer() {
+	playerTimerCurrentSeconds = 0;
+}

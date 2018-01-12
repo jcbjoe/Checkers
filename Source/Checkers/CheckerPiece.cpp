@@ -166,4 +166,10 @@ void ACheckerPiece::makeKing() {
 void ACheckerPiece::taken() {
 	checkerPieceMesh_->SetVisibility(false);
 	destructive->SetDestructibleMesh(destructableMesh);
+	FTimerHandle UnusedHandle;
+	GetWorldTimerManager().SetTimer(UnusedHandle, this, &ACheckerPiece::removeDebris, 5, false);
+}
+
+void ACheckerPiece::removeDebris() {
+	destructive->DestroyComponent();
 }
