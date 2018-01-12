@@ -30,7 +30,7 @@ APlayerPawn::APlayerPawn() : cameraMoving(false), spawnCard(false), spawnedCard(
 
 	OurCameraSpringArm->bDoCollisionTest = false;
 
-	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Card/Low_Poly_Card.Low_Poly_Card'"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Card/New/Card.Card'"));
 	card_ = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AttachPoint"));
 	card_->SetStaticMesh(gridMesh.Object);
 	card_->SetupAttachment(OurCameraSpringArm, USpringArmComponent::SocketName);
@@ -50,24 +50,22 @@ APlayerPawn::APlayerPawn() : cameraMoving(false), spawnCard(false), spawnedCard(
 
 void APlayerPawn::initMaterials() {
 
-	ConstructorHelpers::FObjectFinder<UMaterial> getAKingCardMat(TEXT("Material'/Game/Models/Card/materials/GetAKing/GetAKingMat.GetAKingMat'"));
+	ConstructorHelpers::FObjectFinder<UMaterial> getAKingCardMat(TEXT("Material'/Game/Models/Card/New/Materials/Textures/getKingCardMat.getKingCardMat'"));
 	getAKingCard = getAKingCardMat.Object;
-	ConstructorHelpers::FObjectFinder<UMaterial> getAKingCardFrontMat(TEXT("Material'/Game/Models/Card/materials/GetAKing/getAKingMat2.getAKingMat2'"));
-	getAKingCardFront = getAKingCardFrontMat.Object;
 
-	ConstructorHelpers::FObjectFinder<UMaterial> extraMoveCardMat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
+	ConstructorHelpers::FObjectFinder<UMaterial> extraMoveCardMat(TEXT("Material'/Game/Models/Card/New/Materials/Textures/takeAnExtraTurnMat.takeAnExtraTurnMat'"));
 	extraMoveCard = extraMoveCardMat.Object;
 
-	ConstructorHelpers::FObjectFinder<UMaterial> kingForATurnCardMat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
-	kingForATurnCard = kingForATurnCardMat.Object;
+	ConstructorHelpers::FObjectFinder<UMaterial> enemyLoosesRandomPiece(TEXT("Material'/Game/Models/Card/New/Materials/Textures/oponentLoosesRandomPiece.oponentLoosesRandomPiece'"));
+	kingForATurnCard = enemyLoosesRandomPiece.Object;
 
-	ConstructorHelpers::FObjectFinder<UMaterial> GiveOpponentKingCardMat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
+	ConstructorHelpers::FObjectFinder<UMaterial> GiveOpponentKingCardMat(TEXT("Material'/Game/Models/Card/New/Materials/Textures/giveYourOponentKing.giveYourOponentKing'"));
 	GiveOpponentKingCard = GiveOpponentKingCardMat.Object;
 
-	ConstructorHelpers::FObjectFinder<UMaterial> missNextTurnCardMat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
+	ConstructorHelpers::FObjectFinder<UMaterial> missNextTurnCardMat(TEXT("Material'/Game/Models/Card/New/Materials/Textures/missYourNextTurn.missYourNextTurn'"));
 	missNextTurnCard = missNextTurnCardMat.Object;
 
-	ConstructorHelpers::FObjectFinder<UMaterial> loseRandomPieceCardMat(TEXT("Material'/Game/Models/Pawns/Normal/Materials/TexB.TexB'"));
+	ConstructorHelpers::FObjectFinder<UMaterial> loseRandomPieceCardMat(TEXT("Material'/Game/Models/Card/New/Materials/Textures/looseARandoMPieceMat.looseARandoMPieceMat'"));
 	loseRandomPieceCard = loseRandomPieceCardMat.Object;
 
 
@@ -236,8 +234,7 @@ void APlayerPawn::SelectCard() {
 	//	//Good Effect
 	//	if ((effect >= 0) && (effect <= 9)) {
 			//Get a King
-			card_->SetMaterial(1, getAKingCard);
-			card_->SetMaterial(0, getAKingCardFront);
+			card_->SetMaterial(0, getAKingCard);
 			type = 1;
 	//	}
 	//	if ((effect >= 10) && (effect <= 79)) {
