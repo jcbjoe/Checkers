@@ -50,6 +50,8 @@ public:
 
 	bool piecesRemaining();
 
+	vector<ACheckerPiece*> findNotKing(int player);
+
 private: 
 	static const int GRID_SIZE = 8;
 

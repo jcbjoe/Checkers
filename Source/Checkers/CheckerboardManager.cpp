@@ -553,3 +553,19 @@ bool ACheckerboardManager::piecesRemaining() {
 	else
 		return false;
 }
+
+vector<ACheckerPiece*> ACheckerboardManager::findNotKing(int player) {
+	vector<ACheckerPiece*> kings;
+	for (int x = 0; x < GRID_SIZE; x++) {
+		for (int y = 0; y < GRID_SIZE; y++) {
+			if (hasPieceOnTop(gridPieceArray[x][y])) {
+				ACheckerPiece* piece = checkerPieceArray[x][y];
+				if (piece->getPlayer() == player) {
+					if (!(piece->isKing()))
+						kings.push_back(piece);
+				}
+			}
+		}
+	}
+	return kings;
+}

@@ -236,9 +236,9 @@ void APlayerPawn::SelectCard() {
 	//	//Good Effect
 	//	if ((effect >= 0) && (effect <= 9)) {
 			//Get a King
-			card_->SetMaterial(1, getAKingCard);
+		/*	card_->SetMaterial(1, getAKingCard);
 			card_->SetMaterial(0, getAKingCardFront);
-			type = 1;
+			type = 1;*/
 	//	}
 	//	if ((effect >= 10) && (effect <= 79)) {
 	//		//Extra Move
@@ -255,8 +255,8 @@ void APlayerPawn::SelectCard() {
 	//	//Bad Effect
 	//	if ((effect >= 0) && (effect <= 9)) {
 	//		//Give Opponent King
-	//		card_->SetMaterial(0, GiveOpponentKingCard);
-	//		type = 4;
+			card_->SetMaterial(0, GiveOpponentKingCard);
+			type = 4;
 	//	}
 	//	if ((effect >= 10) && (effect <= 89)) {
 	//		//Miss Next Turn
@@ -301,20 +301,20 @@ void APlayerPawn::executeCardAbility() {
 
 	int currentPlayer = GameManager->getCurrentPlayer();
 	int enemy = 0;
+	int random;
 	if (currentPlayer == 0)
 		enemy = 1;
 
 	ACheckerPiece* piece;
+	vector<ACheckerPiece*> notKings;
 
 	switch (type) {
 	//Good
 		//Get a King
 		case 1:
-			piece = GameManager->getCheckerboardManager()->randomPiece(GameManager->getCurrentPlayer());
-			while (!(piece->isKing())) {
-				piece = GameManager->getCheckerboardManager()->randomPiece(GameManager->getCurrentPlayer());
-			}
-			piece->makeKing();
+			notKings = GameManager->getCheckerboardManager()->findNotKing(GameManager->getCurrentPlayer());
+			random = rand() % notKings.size();
+			notKings.at(random)->makeKing();
 			break;
 		//ExtraMove
 		case 2:
@@ -322,18 +322,15 @@ void APlayerPawn::executeCardAbility() {
 			break;
 		//Enemy looses random piece
 		case 3:
-
 			piece = GameManager->getCheckerboardManager()->randomPiece(enemy);
 			GameManager->getCheckerboardManager()->takePieceRemote(piece);
 			break;
 	//Bad
 		//Give oponent king
 		case 4:
-			piece = GameManager->getCheckerboardManager()->randomPiece(enemy);
-			while (piece->isKing()) {
-				piece = GameManager->getCheckerboardManager()->randomPiece(GameManager->getCurrentPlayer());
-			}
-			piece->makeKing();
+			notKings = GameManager->getCheckerboardManager()->findNotKing(GameManager->getOtherPlayer());
+			random = rand() % notKings.size();
+			notKings.at(random)->makeKing();
 			break;
 		//Miss next turn
 		case 5:
