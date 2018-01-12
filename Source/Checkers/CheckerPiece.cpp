@@ -11,7 +11,7 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 	PrimaryActorTick.bCanEverTick = true;
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Pawns/Normal/pawn_gamemesh.pawn_gamemesh'"));
-	checkerPieceMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("BasePieceMesh"));
+	checkerPieceMesh_ = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("BasePieceMesh"));
 	checkerPieceMesh_->SetStaticMesh(gridMesh.Object);
 
 
@@ -27,7 +27,24 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 	checkerPieceKingMesh_->SetVisibility(false);
 	checkerPieceKingMesh_->SetMobility(EComponentMobility::Movable);
 
+	//ConstructorHelpers::FObjectFinder<USkeletalMesh> skeletalMesh(TEXT("SkeletalMesh'/Game/Models/Pawns/Normal/anim/test123.test123'"));
 
+	//USkeletalMeshComponent* meshComp = CreateDefaultSubobject <USkeletalMeshComponent>(TEXT("Skeletal"));
+
+	//meshComp->SetSkeletalMesh(skeletalMesh.Object);
+
+	//// load the animation blueprint
+	//const ConstructorHelpers::FObjectFinder<UAnimBlueprint> AnimObj(TEXT("AnimBlueprint'/Game/Models/Pawns/Normal/anim/NewAnimBlueprint.NewAnimBlueprint'"));
+
+
+	//meshComp->SetAnimInstanceClass(AnimObj.Object->GeneratedClass);
+
+	//meshComp->SetWorldScale3D(FVector(0.0125, 0.0125, 0.0125));
+
+	checkerPieceKingMesh_->SetWorldScale3D(FVector(1.75, 1.75, 1.75));
+	destructive->SetWorldScale3D(FVector(1.75, 1.75, 1.75));
+	checkerPieceMesh_->SetWorldScale3D(FVector(1.75, 1.75, 1.75));
+	
 	RootComponent = checkerPieceMesh_;
 
 	initEvents();

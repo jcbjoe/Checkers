@@ -42,6 +42,13 @@ public:
 
 	void onClicked(int, int);
 
+	void endTurnManager();
+
+	ACheckerPiece* randomPiece(int);
+
+	void takePieceRemote(ACheckerPiece*);
+
+	bool piecesRemaining();
 
 private: 
 	static const int GRID_SIZE = 8;
@@ -96,6 +103,6 @@ private:
 
 	vector<vector<AGridPiece*>> canBeMovedArray;
 
-	ACheckerPiece* randomPiece();
+	bool hasTakenPiece;
 
 };

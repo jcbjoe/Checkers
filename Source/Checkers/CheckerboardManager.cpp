@@ -4,7 +4,7 @@
 #include "GameManager.h"
 
 // Sets default values
-ACheckerboardManager::ACheckerboardManager() : selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr), takingPiece(false)
+ACheckerboardManager::ACheckerboardManager() : selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr), takingPiece(false), hasTakenPiece(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -78,7 +78,7 @@ void ACheckerboardManager::Tick(float DeltaTime)
 					} else {
 						removePossibleMoves();
 
-						GameManager->endTurn();
+						endTurnManager();
 
 						takingPiece = false;
 					}
@@ -170,7 +170,7 @@ void ACheckerboardManager::onClicked(int x, int y) {
 
 								removePossibleMoves();
 
-								GameManager->endTurn();
+								endTurnManager();
 
 							}
 						}
@@ -359,7 +359,7 @@ void ACheckerboardManager::createCheckerboard() {
 				//--- Spawn player pieces
 
 				ACheckerPiece* checkerPiece_;
-				if (i == 0 || i == 1 || i == 2) {
+				if (i == 0 || i == 1 || i == 2) {                                                                                                         //FRotator(0, -90, 90)
 					checkerPiece_ = GetWorld()->SpawnActor<ACheckerPiece>(ACheckerPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 108.697784), FRotator(0, -90, 90), FActorSpawnParameters());
 					checkerPieceArray[newX][j] = checkerPiece_;
 					//--- Player 0
@@ -457,11 +457,16 @@ void ACheckerboardManager::takePiece(ACheckerPiece* checkerPiece) {
 	int y = checkerPiece->getY();
 	checkerPieceArray[x][y] = nullptr;
 	checkerPiece->taken();
+	hasTakenPiece = true;
 	//checkerPiece->Destroy();
-	playerPawn->SpawnCard();
-	GameManager->getUI()->spawnCardText();
-	GameManager->PauseTimer(true);
-	GameManager->setIsInCardMenu(true);
+}
+
+void ACheckerboardManager::takePieceRemote(ACheckerPiece* checkerPiece) {
+	int x = checkerPiece->getX();
+	int y = checkerPiece->getY();
+	checkerPieceArray[x][y] = nullptr;
+	checkerPiece->taken();
+	//checkerPiece->Destroy();
 }
 
 
@@ -493,13 +498,13 @@ bool ACheckerboardManager::canThisPieceBeMoved(AGridPiece* gridPiece) {
 
 }
 
-ACheckerPiece* ACheckerboardManager::randomPiece() {
+ACheckerPiece* ACheckerboardManager::randomPiece(int player) {
 	vector<ACheckerPiece*> pieces;
 	for (int x = 0; x < GRID_SIZE; x++) {
 		for (int y = 0; y < GRID_SIZE; y++) {
 			if (hasPieceOnTop(gridPieceArray[x][y])) {
 				ACheckerPiece* piece = checkerPieceArray[x][y];
-				if (piece->getPlayer() == GameManager->getCurrentPlayer()) {
+				if (piece->getPlayer() == player) {
 					pieces.push_back(piece);
 				}
 			}
@@ -508,4 +513,43 @@ ACheckerPiece* ACheckerboardManager::randomPiece() {
 
 	int Random = rand() % pieces.size();
 	return pieces.at(Random);
+}
+
+void ACheckerboardManager::endTurnManager() {
+
+	if (!(GameManager->getCurrentPlayer() == 0 && GameManager->isPlayer1MissingTurn() || GameManager->getCurrentPlayer() == 1 && GameManager->isPlayer0MissingTurn())) {
+
+		if (hasTakenPiece) {
+			playerPawn->SpawnCard();
+			GameManager->getUI()->spawnCardText();
+			GameManager->PauseTimer(true);
+			GameManager->setIsInCardMenu(true);
+			hasTakenPiece = false;
+		}
+		else {
+			GameManager->endTurn();
+		}
+
+	} else {
+		// You get an extra turn!
+	}
+
+}
+
+bool ACheckerboardManager::piecesRemaining() {
+	vector<ACheckerPiece*> pieces;
+	for (int x = 0; x < GRID_SIZE; x++) {
+		for (int y = 0; y < GRID_SIZE; y++) {
+			if (hasPieceOnTop(gridPieceArray[x][y])) {
+				ACheckerPiece* piece = checkerPieceArray[x][y];
+				if (piece->getPlayer() == GameManager->getOtherPlayer()) {
+					pieces.push_back(piece);
+				}
+			}
+		}
+	}
+	if (pieces.size() > 0)
+		return true;
+	else
+		return false;
 }

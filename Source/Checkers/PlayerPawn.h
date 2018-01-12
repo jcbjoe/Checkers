@@ -81,4 +81,12 @@ public:
 
 private:
 	AGameManager* GameManager;
+
+	void endTurnDelayed();
+
+	void startTimer();
+
+	void executeCardAbility();
+
+	bool extraMove;
 };

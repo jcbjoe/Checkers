@@ -29,6 +29,8 @@ public:
 
 	int getCurrentPlayer();
 
+	int getOtherPlayer();
+
 	UMyUserWidget* getUI();
 
 	void endTurn();
@@ -38,6 +40,17 @@ public:
 	bool isInCardMenu();
 
 	void setIsInCardMenu(bool val);
+
+	ACheckerboardManager* getCheckerboardManager();
+
+	void setPlayer0MissTurn(bool);
+	void setPlayer1MissTurn(bool);
+
+	bool isPlayer0MissingTurn();
+
+	bool isPlayer1MissingTurn();
+
+	void endGame();
 
 private:
 	int lastSecond;
@@ -61,4 +74,6 @@ private:
 
 	bool inCardMenu;
 
+	bool player0MissTurn;
+	bool player1MissTurn;
 };

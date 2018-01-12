@@ -5,7 +5,7 @@
 
 
 // Sets default values
-AGameManager::AGameManager(): lastSecond(0), playerTimerOn(false), playerTimerCurrentSeconds(0), paused(false), inCardMenu(false)
+AGameManager::AGameManager(): lastSecond(0), playerTimerOn(false), playerTimerCurrentSeconds(0), paused(false), inCardMenu(false), player0MissTurn(false), player1MissTurn(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -83,18 +83,30 @@ void AGameManager::startTurn() {
 }
 
 void AGameManager::endTurn() {
-	if (playersTurn == 0) {
-		playersTurn = 1;
-		getUI()->setPlayer1Time(FString::FromInt(0));
-	} else {
-		playersTurn = 0;
-		getUI()->setPlayer2Time(FString::FromInt(0));
+	if (checkerBoardManager->piecesRemaining()) {
+		if (playersTurn == 0) {
+			playersTurn = 1;
+			getUI()->setPlayer1Time(FString::FromInt(0));
+		}
+		else {
+			playersTurn = 0;
+			getUI()->setPlayer2Time(FString::FromInt(0));
+		}
+		startTurn();
 	}
-	startTurn();
+	else
+		endGame();
 }
 
 int AGameManager::getCurrentPlayer() {
 	return playersTurn;
+}
+
+int AGameManager::getOtherPlayer() {
+	if (playersTurn == 0)
+		return 1;
+	else
+		return 0;
 }
 
 void AGameManager::PauseTimer(bool pause) {
@@ -109,4 +121,27 @@ bool AGameManager::isInCardMenu() {
 
 void AGameManager::setIsInCardMenu(bool val) {
 	inCardMenu = val;
+}
+
+ACheckerboardManager* AGameManager::getCheckerboardManager() {
+	return checkerBoardManager;
+}
+
+void AGameManager::setPlayer0MissTurn(bool miss) {
+	player0MissTurn = miss;
+}
+void AGameManager::setPlayer1MissTurn(bool miss) {
+	player1MissTurn = miss;
+}
+
+bool AGameManager::isPlayer0MissingTurn() {
+	return player0MissTurn;
+}
+
+bool AGameManager::isPlayer1MissingTurn() {
+	return player1MissTurn;
+}
+
+void AGameManager::endGame() {
+	getUI()->showEnd(getCurrentPlayer());
 }

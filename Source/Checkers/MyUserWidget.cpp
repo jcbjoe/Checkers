@@ -64,3 +64,11 @@ void UMyUserWidget::despawnCard() {
 void UMyUserWidget::setShowNotYourPiece(bool show) {
 	showNotYourPiece = show;
 }
+
+void UMyUserWidget::showEnd(int player) {
+	gameOver = true;
+	if (player == 1)
+		playerOneWins = true;
+	if (player == 0)
+		playerOneWins = false;
+}

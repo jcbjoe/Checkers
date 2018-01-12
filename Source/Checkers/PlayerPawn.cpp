@@ -2,10 +2,11 @@
 
 #include "PlayerPawn.h"
 #include "GameManager.h"
+#include "CheckerPiece.h"
 
 
 // Sets default values
-APlayerPawn::APlayerPawn(): cameraMoving(false), spawnCard(false), spawnedCard(false), despawnCard(false), rotateCard(false), type(0)
+APlayerPawn::APlayerPawn() : cameraMoving(false), spawnCard(false), spawnedCard(false), despawnCard(false), rotateCard(false), type(0), extraMove(false)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -21,7 +22,7 @@ APlayerPawn::APlayerPawn(): cameraMoving(false), spawnCard(false), spawnedCard(f
 
 	OurCameraSpringArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 0.0f), FRotator(-45.0f, 90.0f, 0.0f));
 
-	OurCameraSpringArm->TargetArmLength = 90.f;
+	OurCameraSpringArm->TargetArmLength = 120.f;
 
 	OurCameraSpringArm->bEnableCameraLag = true;
 
@@ -217,16 +218,14 @@ void APlayerPawn::DespawnCard() {
 		z = 0;
 		spawnCard = false;
 		MyLight->SetIntensity(0);
-		GameManager->PauseTimer(false);
-		GameManager->setIsInCardMenu(false);
+		startTimer();
 	}
 }
 
 void APlayerPawn::RotateCard() {
 	rotateCard = true;
 	ry = 0;
-	GameManager->PauseTimer(false);
-	GameManager->setIsInCardMenu(false);
+	startTimer();
 }
 
 void APlayerPawn::SelectCard() {
@@ -274,4 +273,80 @@ void APlayerPawn::SelectCard() {
 
 void APlayerPawn::setGameManager(AGameManager* man) {
 	GameManager = man;
+}
+
+void APlayerPawn::startTimer() {
+
+	executeCardAbility();
+
+	if (extraMove) {
+		GameManager->PauseTimer(false);
+		GameManager->setIsInCardMenu(false);
+	} else {
+		FTimerHandle UnusedHandle;
+		GetWorldTimerManager().SetTimer(UnusedHandle, this, &APlayerPawn::endTurnDelayed, 5, false);
+	}
+
+}
+
+void APlayerPawn::endTurnDelayed() {
+
+
+	GameManager->PauseTimer(false);
+	GameManager->setIsInCardMenu(false);
+	GameManager->endTurn();
+}
+
+void APlayerPawn::executeCardAbility() {
+
+	int currentPlayer = GameManager->getCurrentPlayer();
+	int enemy = 0;
+	if (currentPlayer == 0)
+		enemy = 1;
+
+	ACheckerPiece* piece;
+
+	switch (type) {
+	//Good
+		//Get a King
+		case 1:
+			piece = GameManager->getCheckerboardManager()->randomPiece(GameManager->getCurrentPlayer());
+			while (!(piece->isKing())) {
+				piece = GameManager->getCheckerboardManager()->randomPiece(GameManager->getCurrentPlayer());
+			}
+			piece->makeKing();
+			break;
+		//ExtraMove
+		case 2:
+			extraMove = true;
+			break;
+		//Enemy looses random piece
+		case 3:
+
+			piece = GameManager->getCheckerboardManager()->randomPiece(enemy);
+			GameManager->getCheckerboardManager()->takePieceRemote(piece);
+			break;
+	//Bad
+		//Give oponent king
+		case 4:
+			piece = GameManager->getCheckerboardManager()->randomPiece(enemy);
+			while (piece->isKing()) {
+				piece = GameManager->getCheckerboardManager()->randomPiece(GameManager->getCurrentPlayer());
+			}
+			piece->makeKing();
+			break;
+		//Miss next turn
+		case 5:
+			if (GameManager->getCurrentPlayer() == 0) {
+				GameManager->setPlayer0MissTurn(true);
+			} else {
+				GameManager->setPlayer1MissTurn(true);
+			}
+			break;
+		//Lose random piece
+		case 6:
+			piece = GameManager->getCheckerboardManager()->randomPiece(currentPlayer);
+			GameManager->getCheckerboardManager()->takePieceRemote(piece);
+			break;
+	}
 }

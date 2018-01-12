@@ -60,6 +60,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
 	bool showNotYourPiece;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	bool gameOver;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	bool playerOneWins;
 	
 	void setPlayer1Time(FString time);
 
@@ -84,4 +88,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void rotateCard();
+
+	void showEnd(int player);
 };
