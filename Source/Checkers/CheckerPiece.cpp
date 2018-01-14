@@ -85,8 +85,8 @@ void ACheckerPiece::BeginPlay()
 	Super::BeginPlay();
 	//checkerPieceKingMesh_->SetRelativeLocation(FVector(0, 0, 100));
 	checkerPieceKingMesh_->SetRelativeRotation(FRotator(0, 0, 0));
-	checkerPieceKingMesh_->AttachTo(RootComponent);
-	destructive->AttachTo(RootComponent);
+	checkerPieceKingMesh_->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	destructive->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called every frame

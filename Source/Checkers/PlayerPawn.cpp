@@ -98,7 +98,7 @@ void APlayerPawn::BeginPlay()
 	MyLight->SetRelativeLocationAndRotation(FVector(-1.824101, -65.448853, 75.227783), FRotator(0,0,45));
 	MyLight->SetIntensity(0);
 	MyLight->SetAttenuationRadius(102);
-	MyLight->AttachTo(RootComponent);
+	MyLight->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called every frame

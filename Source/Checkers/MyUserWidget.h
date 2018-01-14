@@ -21,48 +21,48 @@ public:
 
 	APlayerPawn* playerPawn;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	FString Player1Time;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	FString Player2Time;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	FString GlobalTime;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	FString Player1Score;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	FString Player2Score;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	int CurrentPlayer;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	FString AlertMessage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	int delayTime;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool showAlertMessage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool hidden;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool take;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool buttonPressed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool showNotYourPiece;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool gameOver;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SomeText)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool playerOneWins;
 	
 	void setPlayer1Time(FString time);
