@@ -9,7 +9,6 @@
 #include "PlayerPawn.h"
 #include "Card.h"
 #include <Runtime/Engine/Classes/Engine/Engine.h>
-#include <EngineGlobals.h>
 #include <vector>
 #include "CheckerboardManager.generated.h"
 

@@ -216,13 +216,17 @@ void APlayerPawn::DespawnCard() {
 		z = 0;
 		spawnCard = false;
 		MyLight->SetIntensity(0);
-		startTimer();
 	}
+}
+
+void APlayerPawn::declineCard() {
+	endTurnDelayed();
 }
 
 void APlayerPawn::RotateCard() {
 	rotateCard = true;
 	ry = 0;
+	startTimer();
 }
 
 void APlayerPawn::SelectCard() {

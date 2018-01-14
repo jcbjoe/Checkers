@@ -18,7 +18,7 @@ public:
 	// Sets default values for this actor's properties
 	ACard();
 	UPROPERTY(VisibleAnywhere)
-		UStaticMeshComponent* CardMesh_;
+	UStaticMeshComponent* CardMesh_;
 
 protected:
 	// Called when the game starts or when spawned

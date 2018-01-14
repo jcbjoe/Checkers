@@ -78,6 +78,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	UPointLightComponent* MyLight;
 
+	void declineCard();
+
 private:
 	AGameManager* GameManager;
 
