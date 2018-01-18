@@ -7,7 +7,6 @@
 #include "GridPiece.h"
 #include "CheckerPiece.h"
 #include "PlayerPawn.h"
-#include "Card.h"
 #include <Runtime/Engine/Classes/Engine/Engine.h>
 #include <vector>
 #include "CheckerboardManager.generated.h"

@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Card.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h"
@@ -79,6 +78,8 @@ public:
 	UPointLightComponent* MyLight;
 
 	void declineCard();
+
+	void setPaused(bool);
 
 private:
 	AGameManager* GameManager;

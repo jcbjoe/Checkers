@@ -54,6 +54,8 @@ public:
 
 	void resetTimer();
 
+	void setGlobalPause(bool pause);
+
 private:
 	int lastSecond;
 
@@ -78,5 +80,7 @@ private:
 
 	bool player0MissTurn;
 	bool player1MissTurn;
+
+	bool globalPause;
 
 };

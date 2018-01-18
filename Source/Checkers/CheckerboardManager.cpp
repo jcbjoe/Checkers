@@ -38,7 +38,7 @@ void ACheckerboardManager::Tick(float DeltaTime)
 			float xDistance = pieceToMoveTo->GetActorLocation().X - checkerPieceMoving->GetActorLocation().X;
 			float yDistance = pieceToMoveTo->GetActorLocation().Y - checkerPieceMoving->GetActorLocation().Y;
 			float distance = FGenericPlatformMath::Sqrt(xDistance * xDistance + yDistance * yDistance);
-			if (distance > 0.01) {
+			if (distance > 0.1) {
 				checkerPieceMoving->SetActorLocation(
 					FVector(
 						checkerPieceMoving->GetActorLocation().X + xDistance * easingAmount,

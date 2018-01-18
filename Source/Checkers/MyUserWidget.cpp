@@ -12,48 +12,64 @@ void UMyUserWidget::NativeConstruct()
 }
 
 void UMyUserWidget::setPlayer1Time(FString time) {
-	Player1Time = time;
+	if (isHudAvaliable()) {
+		Player1Time = time;
+	}
 }
 
 void UMyUserWidget::setPlayer2Time(FString time) {
-	Player2Time = time;
+	if (isHudAvaliable()) {
+		Player2Time = time;
+	}
 }
 
 void UMyUserWidget::setGlobalTime(FString time) {
-	GlobalTime = time;
+	if (isHudAvaliable()) {
+		GlobalTime = time;
+	}
 }
 
 void UMyUserWidget::setPlayer1Score(FString time) {
-	Player1Score = time;
+	if (isHudAvaliable()) {
+		Player1Score = time;
+	}
 }
 void UMyUserWidget::setPlayer2Score(FString time) {
-	Player2Score = time;
+	if (isHudAvaliable()) {
+		Player2Score = time;
+	}
 }
 
 void UMyUserWidget::setCurrentPlayer(int time) {
-	CurrentPlayer = time;
+	if (isHudAvaliable()) {
+		CurrentPlayer = time;
+	}
 }
 
 void UMyUserWidget::setAlertMessage(FString message, int displayTime) {
+	if (isHudAvaliable()) {
+		AlertMessage = message;
 
-	AlertMessage = message;
+		delayTime = displayTime;
 
-	delayTime = displayTime;
+		showAlertMessage = true;
 
-	showAlertMessage = true;
-
-	FTimerHandle UnusedHandle;
-	playerPawn->GetWorldTimerManager().SetTimer(UnusedHandle, this, &UMyUserWidget::turnOffAlert, delayTime, false);
+		FTimerHandle UnusedHandle;
+		playerPawn->GetWorldTimerManager().SetTimer(UnusedHandle, this, &UMyUserWidget::turnOffAlert, delayTime, false);
+	}
 
 }
 
 void UMyUserWidget::turnOffAlert() {
-	showAlertMessage = false;
+	if (isHudAvaliable()) {
+		showAlertMessage = false;
+	}
 }
 
 void UMyUserWidget::spawnCardText() {
-
-	hidden = true;
+	if (isHudAvaliable()) {
+		hidden = true;
+	}
 
 }
 
@@ -74,13 +90,26 @@ void UMyUserWidget::declineCard() {
 }
 
 void UMyUserWidget::setShowNotYourPiece(bool show) {
-	showNotYourPiece = show;
+	if (isHudAvaliable()) {
+		showNotYourPiece = show;
+	}
 }
 
 void UMyUserWidget::showEnd(int player) {
-	gameOver = true;
-	if (player == 1)
-		playerOneWins = true;
-	if (player == 0)
-		playerOneWins = false;
+	if (isHudAvaliable()) {
+
+		gameOver = true;
+		if (player == 1)
+			playerOneWins = true;
+		if (player == 0)
+			playerOneWins = false;
+	}
+}
+
+bool UMyUserWidget::isHudAvaliable() {
+	if (this == nullptr) {
+		return false;
+	} else {
+		return true;
+	}
 }

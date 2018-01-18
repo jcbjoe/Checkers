@@ -4,6 +4,10 @@
 
 #include "PlayerPawn.h"
 #include "CoreMinimal.h"
+#include "Runtime/UMG/Public/UMG.h"
+#include "Runtime/UMG/Public/UMGStyle.h"
+#include "Runtime/UMG/Public/Slate/SObjectWidget.h"
+#include "Runtime/UMG/Public/IUMGModule.h"
 #include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 #include "MyUserWidget.generated.h"
 
@@ -17,7 +21,6 @@ class CHECKERS_API UMyUserWidget : public UUserWidget
 	
 public:
 	virtual void NativeConstruct() override;
-
 
 	APlayerPawn* playerPawn;
 
@@ -95,4 +98,7 @@ public:
 	void showEnd(int player);
 
 	void turnOffAlert();
+
+private:
+	bool isHudAvaliable();
 };

@@ -354,3 +354,7 @@ void APlayerPawn::executeCardAbility() {
 			break;
 	}
 }
+
+void APlayerPawn::setPaused(bool paused) {
+	GameManager->setGlobalPause(paused);
+}

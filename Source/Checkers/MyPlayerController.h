@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "MyUserWidget.h"
+#include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "MyPlayerController.generated.h"
 
 
@@ -29,5 +30,16 @@ public:
 	virtual void BeginPlay();
 
 	UMyUserWidget* getHudWidget();
+
+	bool isHudAvaliable();
+
+	UFUNCTION(BlueprintCallable)
+	void pauseGameTest(bool pause);
+
+	UFUNCTION(BlueprintCallable)
+	bool isPaused();
+
+private:
+	bool pausedGlobal;
 	
 };

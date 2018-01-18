@@ -15,9 +15,11 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 	checkerPieceMesh_->SetStaticMesh(gridMesh.Object);
 
 
-	ConstructorHelpers::FObjectFinder<UDestructibleMesh> destructiveMesh(TEXT("DestructibleMesh'/Game/Models/Pawns/Normal/pawn_gamemesh_DM.pawn_gamemesh_DM'"));
+	static ConstructorHelpers::FObjectFinder<UDestructibleMesh> destructiveMesh(TEXT("DestructibleMesh'/Game/Models/Pawns/Normal/pawn_gamemesh_DM.pawn_gamemesh_DM'"));
 	destructableMesh = destructiveMesh.Object;
 	destructive = CreateDefaultSubobject <UDestructibleComponent>(TEXT("DestructiveMesh"));
+
+	destructive->SetDestructibleMesh(destructableMesh);
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> kingGridMesh(TEXT("StaticMesh'/Game/Models/Pawns/King/king_gamemesh.king_gamemesh'"));
 	checkerPieceKingMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("KingMesh"));

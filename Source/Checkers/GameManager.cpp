@@ -5,7 +5,7 @@
 
 
 // Sets default values
-AGameManager::AGameManager(): lastSecond(0), playerTimerOn(false), playerTimerCurrentSeconds(0), paused(false), inCardMenu(false), player0MissTurn(false), player1MissTurn(false)
+AGameManager::AGameManager(): lastSecond(0), playerTimerOn(false), playerTimerCurrentSeconds(0), paused(false), inCardMenu(false), player0MissTurn(false), player1MissTurn(false), globalPause(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -48,7 +48,7 @@ UMyUserWidget* AGameManager::getUI() {
 
 void AGameManager::tickTimer() {
 	int seconds = UGameplayStatics::GetRealTimeSeconds(GetWorld());
-	if (lastSecond <= seconds) {
+	if (lastSecond <= seconds && !globalPause) {
 		//--- 1 second
 
 		seconds++;
@@ -111,6 +111,11 @@ int AGameManager::getOtherPlayer() {
 
 void AGameManager::PauseTimer(bool pause) {
 	paused = pause;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("This is an on screen message!"));
+}
+
+void AGameManager::setGlobalPause(bool pause) {
+	globalPause = pause;
 }
 
 bool AGameManager::isInCardMenu() {
