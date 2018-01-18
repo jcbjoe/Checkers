@@ -473,7 +473,6 @@ void ACheckerboardManager::takePieceRemote(ACheckerPiece* checkerPiece) {
 bool ACheckerboardManager::canThisPieceBeMoved(AGridPiece* gridPiece) {
 
 	int player = GameManager->getCurrentPlayer();
-
 	bool returnVar = true;
 
 	for (int x = 0; x < GRID_SIZE; x++) {
@@ -530,10 +529,15 @@ void ACheckerboardManager::endTurnManager() {
 			GameManager->endTurn();
 
 			gridPieceArray[selectedX][selectedY]->setSelected(false);
+
 		}
 
 	} else {
 		// You get an extra turn!
+		if (GameManager->getCurrentPlayer() == 0)
+			GameManager->setPlayer1MissTurn(false);
+		if (GameManager->getCurrentPlayer() == 1)
+			GameManager->setPlayer0MissTurn(false);
 	}
 
 }
