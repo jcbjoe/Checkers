@@ -14,13 +14,6 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 	checkerPieceMesh_ = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("BasePieceMesh"));
 	checkerPieceMesh_->SetStaticMesh(gridMesh.Object);
 
-
-	static ConstructorHelpers::FObjectFinder<UDestructibleMesh> destructiveMesh(TEXT("DestructibleMesh'/Game/Models/Pawns/Normal/pawn_gamemesh_DM.pawn_gamemesh_DM'"));
-	destructableMesh = destructiveMesh.Object;
-	destructive = CreateDefaultSubobject <UDestructibleComponent>(TEXT("DestructiveMesh"));
-
-	destructive->SetDestructibleMesh(destructableMesh);
-
 	ConstructorHelpers::FObjectFinder<UStaticMesh> kingGridMesh(TEXT("StaticMesh'/Game/Models/Pawns/King/king_gamemesh.king_gamemesh'"));
 	checkerPieceKingMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("KingMesh"));
 	checkerPieceKingMesh_->SetStaticMesh(kingGridMesh.Object);
@@ -43,7 +36,6 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 	//meshComp->SetWorldScale3D(FVector(0.0125, 0.0125, 0.0125));
 
 	checkerPieceKingMesh_->SetWorldScale3D(FVector(1.75, 1.75, 1.75));
-	destructive->SetWorldScale3D(FVector(1.75, 1.75, 1.75));
 	checkerPieceMesh_->SetWorldScale3D(FVector(1.75, 1.75, 1.75));
 	
 	RootComponent = checkerPieceMesh_;
@@ -85,10 +77,8 @@ void ACheckerPiece::initEvents() {
 void ACheckerPiece::BeginPlay()
 {
 	Super::BeginPlay();
-	//checkerPieceKingMesh_->SetRelativeLocation(FVector(0, 0, 100));
 	checkerPieceKingMesh_->SetRelativeRotation(FRotator(0, 0, 0));
 	checkerPieceKingMesh_->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	destructive->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called every frame
@@ -162,16 +152,49 @@ void ACheckerPiece::makeKing() {
 	checkerPieceMesh_->SetVisibility(false);
 	checkerPieceKingMesh_->SetVisibility(true);
 	RootComponent = checkerPieceKingMesh_;
-	destructive->SetDestructibleMesh(destructableMesh);
 }
 
 void ACheckerPiece::taken() {
+	UDestructibleMesh* DestructibleMesh;
+	if (isKing()) {
+		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/King/king_gamemesh_DM.king_gamemesh_DM")));
+	}
+	else {
+		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/Normal/pawn_gamemesh_DM.pawn_gamemesh_DM")));
+	}
+
+	ADestructibleActor* DestructibleActor = GetWorld()->SpawnActor<ADestructibleActor>(ADestructibleActor::StaticClass(), FVector(0,0,0), FRotator(0, -90, 90));
+
+	if (player == 1) {
+		if (isKing()) {
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(2, player1MaterialKingBody_);
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player1MaterialKingExtra_);
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(1, player1MaterialKingExtra_);
+		} else {
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player1Material_);
+		}
+	} else {
+		if (isKing()) {
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(2, player2MaterialKingBody_);
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player2MaterialKingExtra_);
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(1, player2MaterialKingExtra_);
+		} else {
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player2Material_);
+		}
+	}
+
+	DestructibleActor->SetActorScale3D(FVector(1.75, 1.75, 1.75));
+	DestructibleActor->SetActorTransform(this->GetActorTransform());
+	DestructibleActor->GetDestructibleComponent()->SetDestructibleMesh(DestructibleMesh);
 	checkerPieceMesh_->SetVisibility(false);
-	destructive->SetDestructibleMesh(destructableMesh);
+
 	FTimerHandle UnusedHandle;
-	GetWorldTimerManager().SetTimer(UnusedHandle, this, &ACheckerPiece::removeDebris, 5, false);
+	FTimerDelegate TimerDel;
+	TimerDel.BindUFunction(this, FName("removeDebris"), DestructibleActor);
+
+	GetWorldTimerManager().SetTimer(UnusedHandle, TimerDel, 5, false);
 }
 
-void ACheckerPiece::removeDebris() {
-	destructive->DestroyComponent();
+void ACheckerPiece::removeDebris(ADestructibleActor* mesh) {
+	mesh->Destroy();
 }

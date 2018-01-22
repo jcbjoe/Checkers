@@ -9,6 +9,7 @@
 #include "Engine.h"
 #include "DestructibleComponent.h"
 #include "DestructibleMesh.h"
+#include "DestructibleActor.h"
 #include "CheckerPiece.generated.h"
 
 class ACheckerboardManager;
@@ -25,9 +26,6 @@ public:
 	UStaticMeshComponent* checkerPieceMesh_;
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* checkerPieceKingMesh_;
-
-	UDestructibleComponent* destructive;
-	UDestructibleMesh* destructableMesh;
 
 protected:
 	// Called when the game starts or when spawned
@@ -61,7 +59,6 @@ public:
 
 	void taken();
 
-	void randomPiece();
 
 private:
 
@@ -84,5 +81,6 @@ private:
 	void initEvents();
 	void initMaterials();
 
-	void removeDebris();
+	UFUNCTION()
+	void removeDebris(ADestructibleActor* mesh);
 };
