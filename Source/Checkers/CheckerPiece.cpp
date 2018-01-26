@@ -10,43 +10,50 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/Pawns/Normal/pawn_gamemesh.pawn_gamemesh'"));
-	//checkerPieceMesh_ = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("BasePieceMesh"));
-	//checkerPieceMesh_->SetStaticMesh(gridMesh.Object);
-
-	ConstructorHelpers::FObjectFinder<UStaticMesh> kingGridMesh(TEXT("StaticMesh'/Game/Models/Pawns/King/king_gamemesh.king_gamemesh'"));
-	checkerPieceKingMesh_ = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("KingMesh"));
-	checkerPieceKingMesh_->SetStaticMesh(kingGridMesh.Object);
-
-	checkerPieceKingMesh_->SetVisibility(false);
-	checkerPieceKingMesh_->SetMobility(EComponentMobility::Movable);
+	//
+	//	Pawn Setup
+	//
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> spearMesh(TEXT("StaticMesh'/Game/Models/Pawns/Spear/spear_basemesh.spear_basemesh'"));
-	spear = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("Spear"));
-	spear->SetStaticMesh(spearMesh.Object);
+	spear_ = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("Spear"));
+	spear_->SetStaticMesh(spearMesh.Object);
 
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> skeletalMesh(TEXT("SkeletalMesh'/Game/Models/Pawns/Normal/Animation/Pawn_Animation.Pawn_Animation'"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> pawnMesh(TEXT("SkeletalMesh'/Game/Models/Pawns/Normal/Animation/Pawn_Animation.Pawn_Animation'"));
 
-	meshComp = CreateDefaultSubobject <USkeletalMeshComponent>(TEXT("Skeletal"));
+	checkerPiecePawnMesh_ = CreateDefaultSubobject <USkeletalMeshComponent>(TEXT("Pawn"));
 
-	meshComp->SetSkeletalMesh(skeletalMesh.Object);
+	checkerPiecePawnMesh_->SetSkeletalMesh(pawnMesh.Object);
 
-	//// load the animation blueprint
-	ConstructorHelpers::FObjectFinder<UAnimBlueprintGeneratedClass> AnimObj(TEXT("/Game/Models/Pawns/Normal/Animation/PawnAnimBlueprint.PawnAnimBlueprint_c"));
+	ConstructorHelpers::FObjectFinder<UAnimBlueprintGeneratedClass> PawnAnimBP(TEXT("/Game/Models/Pawns/Normal/Animation/PawnAnimBlueprint.PawnAnimBlueprint_c"));
+
+	checkerPiecePawnMesh_->AnimClass = PawnAnimBP.Object;
+
+	checkerPiecePawnMesh_->SetWorldScale3D(FVector(0.0365, 0.0365, 0.0365));
+
+	RootComponent = checkerPiecePawnMesh_;
 
 
-	meshComp->AnimClass = AnimObj.Object;
-
+	// 
+	//	Knight Setup
+	//
 	
-	/*animInstance->setHit(true);*/
+	ConstructorHelpers::FObjectFinder<UStaticMesh> swordrMesh(TEXT("StaticMesh'/Game/Models/Pawns/Sword/sword_gamemesh.sword_gamemesh'"));
+	sword_ = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("Sword"));
+	sword_->SetStaticMesh(swordrMesh.Object);
 
-	meshComp->SetWorldScale3D(FVector(0.0365, 0.0365, 0.0365));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> kingMesh(TEXT("SkeletalMesh'/Game/Models/Pawns/King/Animation/Knight_Anim.Knight_Anim'"));
 
-	checkerPieceKingMesh_->SetWorldScale3D(FVector(1.75, 1.75, 1.75));
-	//checkerPieceMesh_->SetWorldScale3D(FVector(1.75, 1.75, 1.75));
+	checkerPieceKingMesh_ = CreateDefaultSubobject <USkeletalMeshComponent>(TEXT("Knight"));
+
+	checkerPieceKingMesh_->SetSkeletalMesh(kingMesh.Object);
+
+	ConstructorHelpers::FObjectFinder<UAnimBlueprintGeneratedClass> KnightAnimBP(TEXT("/Game/Models/Pawns/King/Animation/KnightBlueprint.KnightBlueprint_c"));
+
+	checkerPieceKingMesh_->AnimClass = KnightAnimBP.Object;
+
+	checkerPieceKingMesh_->SetVisibility(false);
+	sword_->SetVisibility(false);
 	
-	RootComponent = meshComp;
-
 	initEvents();
 
 	initMaterials();
@@ -78,12 +85,18 @@ void ACheckerPiece::initMaterials() {
 	ConstructorHelpers::FObjectFinder<UMaterial> player2MatSpear(TEXT("Material'/Game/Models/Pawns/Spear/SpearW.SpearW'"));
 	player2SpearMaterial_ = player2MatSpear.Object;
 
+	ConstructorHelpers::FObjectFinder<UMaterial> player1MatSword(TEXT("Material'/Game/Models/Pawns/Sword/SwordB.SwordB'"));
+	player1SwordMaterial_ = player1MatSword.Object;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> player2MatSword(TEXT("Material'/Game/Models/Pawns/Sword/SwordW.SwordW'"));
+	player2SwordMaterial_ = player2MatSword.Object;
+
 }
 
 void ACheckerPiece::initEvents() {
-	meshComp->OnBeginCursorOver.AddDynamic(this, &ACheckerPiece::CustomOnBeginMouseOver);
-	meshComp->OnEndCursorOver.AddDynamic(this, &ACheckerPiece::CustomOnEndMouseOver);
-	meshComp->OnClicked.AddDynamic(this, &ACheckerPiece::OnClick);
+	checkerPiecePawnMesh_->OnBeginCursorOver.AddDynamic(this, &ACheckerPiece::CustomOnBeginMouseOver);
+	checkerPiecePawnMesh_->OnEndCursorOver.AddDynamic(this, &ACheckerPiece::CustomOnEndMouseOver);
+	checkerPiecePawnMesh_->OnClicked.AddDynamic(this, &ACheckerPiece::OnClick);
 }
 
 // Called when the game starts or when spawned
@@ -92,12 +105,17 @@ void ACheckerPiece::BeginPlay()
 	Super::BeginPlay();
 	checkerPieceKingMesh_->SetRelativeRotation(FRotator(0, 0, 0));
 	checkerPieceKingMesh_->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	sword_->SetRelativeLocation(FVector(28.76734, 3.564586, -90.630302));
+	sword_->SetRelativeRotation(FRotator(-1.53152, 50.711842, -85.49662));
+	sword_->SetWorldScale3D(FVector(0.6,0.6,0.6));
+	sword_->AttachToComponent(checkerPieceKingMesh_, FAttachmentTransformRules::KeepRelativeTransform, "Base-HumanRPalm");
 
-	spear->SetRelativeLocation(FVector(23.893864, 15.582496, 64.85891));
-	spear->SetRelativeRotation(FRotator(-6.938352, 54.000397, -86.734001));
-	spear->SetWorldScale3D(FVector(0.268502, 0.268502, 0.268502));
-	spear->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform, "Base-HumanRPalm");
-	animInstance = Cast<UMyAnimInstance>(meshComp->GetAnimInstance());
+	spear_->SetRelativeLocation(FVector(23.893864, 15.582496, 64.85891));
+	spear_->SetRelativeRotation(FRotator(-6.938352, 54.000397, -86.734001));
+	spear_->SetWorldScale3D(FVector(0.268502, 0.268502, 0.268502));
+	spear_->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform, "Base-HumanRPalm");
+
+	pawnAnimInstance_ = Cast<UMyAnimInstance>(checkerPiecePawnMesh_->GetAnimInstance());
 }
 
 // Called every frame
@@ -113,20 +131,22 @@ void ACheckerPiece::passVariables(int i, int j, int passedPlayer, ACheckerboardM
 	player = passedPlayer;
 	checkerBoardManager_ = cbm;
 	if (player == 1) {
-		meshComp->SetMaterial(0, player1Material_);
+		checkerPiecePawnMesh_->SetMaterial(0, player1Material_);
 
 		checkerPieceKingMesh_->SetMaterial(2, player1MaterialKingBody_);
 		checkerPieceKingMesh_->SetMaterial(0, player1MaterialKingExtra_);
 		checkerPieceKingMesh_->SetMaterial(1, player1MaterialKingExtra_);
-		spear->SetMaterial(0, player1SpearMaterial_);
+		spear_->SetMaterial(0, player1SpearMaterial_);
+		sword_->SetMaterial(0, player1SwordMaterial_);
 
 	} else {
-		meshComp->SetMaterial(0, player2Material_);
+		checkerPiecePawnMesh_->SetMaterial(0, player2Material_);
 
 		checkerPieceKingMesh_->SetMaterial(2, player2MaterialKingBody_);
 		checkerPieceKingMesh_->SetMaterial(0, player2MaterialKingExtra_);
 		checkerPieceKingMesh_->SetMaterial(1, player2MaterialKingExtra_);
-		spear->SetMaterial(0, player2SpearMaterial_);
+		spear_->SetMaterial(0, player2SpearMaterial_);
+		sword_->SetMaterial(0, player2SwordMaterial_);
 	}
 }
 
@@ -170,9 +190,10 @@ void ACheckerPiece::setXY(int passedX, int passedY) {
 
 void ACheckerPiece::makeKing() {
 	king = true;
-	meshComp->SetVisibility(false);
+	checkerPiecePawnMesh_->SetVisibility(false);
+	spear_->SetVisibility(false);
 	checkerPieceKingMesh_->SetVisibility(true);
-	RootComponent = checkerPieceKingMesh_;
+	sword_->SetVisibility(true);
 }
 
 void ACheckerPiece::taken() {
@@ -212,7 +233,9 @@ void ACheckerPiece::taken() {
 
 	DestructibleActor->SetActorScale3D(FVector(1.75, 1.75, 1.75));
 	DestructibleActor->GetDestructibleComponent()->SetDestructibleMesh(DestructibleMesh);
-	meshComp->SetVisibility(false);
+
+	checkerPiecePawnMesh_->SetVisibility(false);
+	spear_->SetVisibility(false);
 
 	FTimerHandle UnusedHandle;
 	FTimerDelegate TimerDel;
@@ -226,5 +249,8 @@ void ACheckerPiece::removeDebris(ADestructibleActor* mesh) {
 }
 
 void ACheckerPiece::setAnimHit(bool hit) {
-	animInstance->setHit(hit);
+	if (isKing()) {
+		pawnAnimInstance_->setHit(hit);
+	} else {
+	}
 }

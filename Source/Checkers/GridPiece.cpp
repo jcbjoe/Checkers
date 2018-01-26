@@ -11,7 +11,7 @@ AGridPiece::AGridPiece(): x(0), y(0), type(0), highlighted(false)
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/GridPiece.GridPiece'"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> gridMesh(TEXT("StaticMesh'/Game/Models/GridPiece/GridPiece.GridPiece'"));
 	gridPieceMesh_ = CreateDefaultSubobject < UStaticMeshComponent>(TEXT("GridMesh"));
 
 	gridPieceMesh_->SetStaticMesh(gridMesh.Object);
@@ -25,10 +25,10 @@ AGridPiece::AGridPiece(): x(0), y(0), type(0), highlighted(false)
 }
 
 void AGridPiece::initMaterials() {
-	ConstructorHelpers::FObjectFinder<UMaterial> brownFinder(TEXT("Material'/Game/Materials/NormalBrown.NormalBrown'"));
+	ConstructorHelpers::FObjectFinder<UMaterial> brownFinder(TEXT("Material'/Game/Models/GridPiece/Brown.Brown'"));
 	brown_ = brownFinder.Object;
 
-	ConstructorHelpers::FObjectFinder<UMaterial> lightBrownFinder(TEXT("Material'/Game/Materials/NormalLightBrown.NormalLightBrown'"));
+	ConstructorHelpers::FObjectFinder<UMaterial> lightBrownFinder(TEXT("Material'/Game/Models/GridPiece/Cream.Cream'"));
 	lightBrown_ = lightBrownFinder.Object;
 
 	ConstructorHelpers::FObjectFinder<UMaterial> brownFinderHighlight(TEXT("Material'/Game/Materials/NormalBrownHighlight.NormalBrownHighlight'"));

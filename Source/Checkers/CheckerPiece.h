@@ -23,15 +23,22 @@ class CHECKERS_API ACheckerPiece : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ACheckerPiece();
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* checkerPieceKingMesh_;
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* spear;
 
 	UPROPERTY(VisibleAnywhere)
-	USkeletalMeshComponent* meshComp;
+	USkeletalMeshComponent* checkerPieceKingMesh_;
 
-	UMyAnimInstance* animInstance;
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* sword_;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* spear_;
+
+	UPROPERTY(VisibleAnywhere)
+	USkeletalMeshComponent* checkerPiecePawnMesh_;
+
+	UMyAnimInstance* pawnAnimInstance_;
+	UMyAnimInstance* knightAnimInstance_;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -81,6 +88,9 @@ private:
 
 	UMaterial* player1SpearMaterial_;
 	UMaterial* player2SpearMaterial_;
+
+	UMaterial* player1SwordMaterial_;
+	UMaterial* player2SwordMaterial_;
 
 	int x;
 	int y;
