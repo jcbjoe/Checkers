@@ -10,6 +10,7 @@
 #include "DestructibleComponent.h"
 #include "DestructibleMesh.h"
 #include "DestructibleActor.h"
+#include "MyAnimInstance.h"
 #include "CheckerPiece.generated.h"
 
 class ACheckerboardManager;
@@ -23,9 +24,14 @@ public:
 	// Sets default values for this actor's properties
 	ACheckerPiece();
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* checkerPieceMesh_;
-	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* checkerPieceKingMesh_;
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* spear;
+
+	UPROPERTY(VisibleAnywhere)
+	USkeletalMeshComponent* meshComp;
+
+	UMyAnimInstance* animInstance;
 
 protected:
 	// Called when the game starts or when spawned
@@ -59,6 +65,8 @@ public:
 
 	void taken();
 
+	void setAnimHit(bool);
+
 
 private:
 
@@ -70,6 +78,9 @@ private:
 
 	UMaterial* player2MaterialKingBody_;
 	UMaterial* player2MaterialKingExtra_;
+
+	UMaterial* player1SpearMaterial_;
+	UMaterial* player2SpearMaterial_;
 
 	int x;
 	int y;

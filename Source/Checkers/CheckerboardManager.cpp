@@ -153,6 +153,7 @@ void ACheckerboardManager::onClicked(int x, int y) {
 									//--- Grab the piece we are taking and remove it.
 									ACheckerPiece* pieceToTake = getPieceTaking(newSelected, possibleMovesForSelectedGrid);
 									takePiece(pieceToTake);
+									checkerPieceMoving->setAnimHit(true);
 
 									//--- Get rid of highlighted moves (dont need anymore)
 									removePossibleMoves();
@@ -360,12 +361,12 @@ void ACheckerboardManager::createCheckerboard() {
 
 				ACheckerPiece* checkerPiece_;
 				if (i == 0 || i == 1 || i == 2) {                                                                                                         //FRotator(0, -90, 90)
-					checkerPiece_ = GetWorld()->SpawnActor<ACheckerPiece>(ACheckerPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 108.697784), FRotator(0, -90, 90), FActorSpawnParameters());
+					checkerPiece_ = GetWorld()->SpawnActor<ACheckerPiece>(ACheckerPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 108.697784), FRotator(0, -90, 0), FActorSpawnParameters());
 					checkerPieceArray[newX][j] = checkerPiece_;
 					//--- Player 0
 					checkerPiece_->passVariables(newX, j, 0, this);
 				} else {
-					checkerPiece_ = GetWorld()->SpawnActor<ACheckerPiece>(ACheckerPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 108.697784), FRotator(0, 90, 90), FActorSpawnParameters());
+					checkerPiece_ = GetWorld()->SpawnActor<ACheckerPiece>(ACheckerPiece::StaticClass(), FVector(i * 9.207275, j * 9.207275, 108.697784), FRotator(0, 90, 0), FActorSpawnParameters());
 					checkerPieceArray[newX][j] = checkerPiece_;
 					//--- Player 1
 					checkerPiece_->passVariables(newX, j, 1, this);
