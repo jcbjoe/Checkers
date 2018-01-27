@@ -74,7 +74,6 @@ public:
 
 	void setAnimHit(bool);
 
-
 private:
 
 	UMaterial* player1Material_;

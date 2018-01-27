@@ -110,12 +110,13 @@ void ACheckerPiece::BeginPlay()
 	sword_->SetWorldScale3D(FVector(0.6,0.6,0.6));
 	sword_->AttachToComponent(checkerPieceKingMesh_, FAttachmentTransformRules::KeepRelativeTransform, "Base-HumanRPalm");
 
-	spear_->SetRelativeLocation(FVector(23.893864, 15.582496, 64.85891));
-	spear_->SetRelativeRotation(FRotator(-6.938352, 54.000397, -86.734001));
-	spear_->SetWorldScale3D(FVector(0.268502, 0.268502, 0.268502));
+	spear_->SetRelativeLocation(FVector(29.785242, 13.054083, 62.272045));
+	spear_->SetRelativeRotation(FRotator(-7.237617, 54.944157, -88.953293));
+	spear_->SetWorldScale3D(FVector(0.28, 0.28, 0.28));
 	spear_->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform, "Base-HumanRPalm");
 
 	pawnAnimInstance_ = Cast<UMyAnimInstance>(checkerPiecePawnMesh_->GetAnimInstance());
+	knightAnimInstance_ = Cast<UMyAnimInstance>(checkerPieceKingMesh_->GetAnimInstance());
 }
 
 // Called every frame
@@ -202,15 +203,15 @@ void ACheckerPiece::taken() {
 		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/King/king_gamemesh_DM.king_gamemesh_DM")));
 	}
 	else {
-		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/Normal/pawn_gamemesh_DM.pawn_gamemesh_DM")));
+		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/Normal/together_DM.together_DM")));
 	}
 	ADestructibleActor* DestructibleActor;
-	FVector loc = FVector(this->GetActorTransform().GetTranslation().X, this->GetActorTransform().GetTranslation().Y, this->GetActorTransform().GetTranslation().Z);
+	FVector loc = FVector(this->GetActorTransform().GetTranslation().X, this->GetActorTransform().GetTranslation().Y, this->GetActorTransform().GetTranslation().Z + 5);
 	if (player == 0) {
-		DestructibleActor = GetWorld()->SpawnActor<ADestructibleActor>(ADestructibleActor::StaticClass(), loc, FRotator(0, -90, 90));
+		DestructibleActor = GetWorld()->SpawnActor<ADestructibleActor>(ADestructibleActor::StaticClass(), loc, FRotator(0, -90, 0));
 	}
 	else {
-		DestructibleActor = GetWorld()->SpawnActor<ADestructibleActor>(ADestructibleActor::StaticClass(), loc, FRotator(0, 90, 90));
+		DestructibleActor = GetWorld()->SpawnActor<ADestructibleActor>(ADestructibleActor::StaticClass(), loc, FRotator(0, 90, 0));
 	}
 
 	if (player == 1) {
@@ -231,7 +232,7 @@ void ACheckerPiece::taken() {
 		}
 	}
 
-	DestructibleActor->SetActorScale3D(FVector(1.75, 1.75, 1.75));
+	DestructibleActor->SetActorScale3D(FVector(0.01436, 0.01436, 0.01436));
 	DestructibleActor->GetDestructibleComponent()->SetDestructibleMesh(DestructibleMesh);
 
 	checkerPiecePawnMesh_->SetVisibility(false);
@@ -241,7 +242,7 @@ void ACheckerPiece::taken() {
 	FTimerDelegate TimerDel;
 	TimerDel.BindUFunction(this, FName("removeDebris"), DestructibleActor);
 
-	//eGetWorldTimerManager().SetTimer(UnusedHandle, TimerDel, 5, false);
+	//GetWorldTimerManager().SetTimer(UnusedHandle, TimerDel, 5, false);
 }
 
 void ACheckerPiece::removeDebris(ADestructibleActor* mesh) {
@@ -250,7 +251,8 @@ void ACheckerPiece::removeDebris(ADestructibleActor* mesh) {
 
 void ACheckerPiece::setAnimHit(bool hit) {
 	if (isKing()) {
-		pawnAnimInstance_->setHit(hit);
+		knightAnimInstance_->setHit(hit);
 	} else {
+		pawnAnimInstance_->setHit(hit);
 	}
 }

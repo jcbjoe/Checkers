@@ -9,6 +9,7 @@
 #include "PlayerPawn.h"
 #include <Runtime/Engine/Classes/Engine/Engine.h>
 #include <vector>
+#include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "CheckerboardManager.generated.h"
 
 
@@ -84,6 +85,8 @@ private:
 
 	ACheckerPiece* proposedPieceToTake;
 
+	ACheckerPiece* pieceTaking;
+
 	bool canTakePiece(AGridPiece*, vector<vector<AGridPiece*>>);
 
 	ACheckerPiece* getPieceTaking(AGridPiece*, vector<vector<AGridPiece*>>);
@@ -105,4 +108,10 @@ private:
 
 	bool hasTakenPiece;
 
+	bool hitting;
+	bool rotating;
+	bool waiting;
+	int seconds;
+	int lastSecond;
+	bool moving;
 };

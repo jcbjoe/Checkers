@@ -4,7 +4,7 @@
 #include "GameManager.h"
 
 // Sets default values
-ACheckerboardManager::ACheckerboardManager() : selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr), takingPiece(false), hasTakenPiece(false)
+ACheckerboardManager::ACheckerboardManager() : selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr), takingPiece(false), hasTakenPiece(false), hitting(false), rotating(false), waiting(false), seconds(0), moving(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -39,14 +39,58 @@ void ACheckerboardManager::Tick(float DeltaTime)
 			float yDistance = pieceToMoveTo->GetActorLocation().Y - checkerPieceMoving->GetActorLocation().Y;
 			float distance = FGenericPlatformMath::Sqrt(xDistance * xDistance + yDistance * yDistance);
 			if (distance > 0.1) {
-				checkerPieceMoving->SetActorLocation(
-					FVector(
-						checkerPieceMoving->GetActorLocation().X + xDistance * easingAmount,
-						checkerPieceMoving->GetActorLocation().Y + yDistance * easingAmount,
-						checkerPieceMoving->GetActorLocation().Z
-					)
-				);
+				if (takingPiece) {
+					if (rotating) {
+						FRotator look = UKismetMathLibrary::FindLookAtRotation(checkerPieceMoving->GetActorLocation(), pieceTaking->GetActorLocation());
+						FRotator test = FRotator(look.Pitch, look.Yaw - 90, look.Roll);
+						FRotator Rotation = FMath::RInterpTo(checkerPieceMoving->GetActorRotation(), test, DeltaTime, 2.0);
+						checkerPieceMoving->SetActorRotation(Rotation);
+						if ((test.Yaw - Rotation.Yaw) < 0.5 && (test.Yaw - Rotation.Yaw) > -0.5) {
+							hitting = true;
+							rotating = false;
+						}
+					}
+					if (hitting) {
+						takePiece(pieceTaking);
+						checkerPieceMoving->setAnimHit(true);
+						hitting = false;
+						waiting = true;
+						lastSecond = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+						seconds = 0;
+					}
+					if (waiting) {
+					
+						if (floor(UGameplayStatics::GetRealTimeSeconds(GetWorld())) > lastSecond) {
+							lastSecond = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+							seconds++;
+						}
+						if (seconds == 2) {
+							waiting = false;
+							moving = true;
+						}
+					}
+					if (moving) {
+						checkerPieceMoving->SetActorLocation(
+							FVector(
+								checkerPieceMoving->GetActorLocation().X + xDistance * easingAmount,
+								checkerPieceMoving->GetActorLocation().Y + yDistance * easingAmount,
+								checkerPieceMoving->GetActorLocation().Z
+							)
+						);
+
+					}
+				}
+				else {
+					checkerPieceMoving->SetActorLocation(
+						FVector(
+							checkerPieceMoving->GetActorLocation().X + xDistance * easingAmount,
+							checkerPieceMoving->GetActorLocation().Y + yDistance * easingAmount,
+							checkerPieceMoving->GetActorLocation().Z
+						)
+					);
+				}
 			} else {
+				moving = false;
 				checkerPieceArray[checkerPieceMoving->getX()][checkerPieceMoving->getY()] = nullptr;
 				checkerPieceMoving->setXY(pieceToMoveTo->getX(), pieceToMoveTo->getY());
 				checkerPieceArray[checkerPieceMoving->getX()][checkerPieceMoving->getY()] = checkerPieceMoving;
@@ -148,17 +192,17 @@ void ACheckerboardManager::onClicked(int x, int y) {
 									oldSelectedGridPiece->setSelected(false);
 									checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
 									pieceToMoveTo = newSelected;
-									pieceMoving = true;
 
 									//--- Grab the piece we are taking and remove it.
-									ACheckerPiece* pieceToTake = getPieceTaking(newSelected, possibleMovesForSelectedGrid);
-									takePiece(pieceToTake);
-									checkerPieceMoving->setAnimHit(true);
+									pieceTaking = getPieceTaking(newSelected, possibleMovesForSelectedGrid);
+
+									rotating = true;
 
 									//--- Get rid of highlighted moves (dont need anymore)
 									removePossibleMoves();
 									//--- lets move but dont end turn yet!
 									takingPiece = true;
+									pieceMoving = true;
 								} else {
 									GameManager->getUI()->setAlertMessage(FString("There is a piece you can take, You must take it!"), 5);
 								}
