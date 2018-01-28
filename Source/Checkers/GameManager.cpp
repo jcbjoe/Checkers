@@ -5,7 +5,7 @@
 
 
 // Sets default values
-AGameManager::AGameManager(): lastSecond(0), playerTimerOn(false), playerTimerCurrentSeconds(0), paused(false), inCardMenu(false), player0MissTurn(false), player1MissTurn(false), globalPause(false)
+AGameManager::AGameManager() : lastSecond(0), playerTimerOn(false), playerTimerCurrentSeconds(0), paused(false), inCardMenu(false), player0MissTurn(false), player1MissTurn(false), globalPause(false), madeChoice(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -153,4 +153,12 @@ void AGameManager::endGame() {
 
 void AGameManager::resetTimer() {
 	playerTimerCurrentSeconds = 0;
+}
+
+bool AGameManager::hasMadeChoice() {
+	return madeChoice;
+}
+
+void AGameManager::makeChoice(bool choice) {
+	madeChoice = choice;
 }

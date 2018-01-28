@@ -56,6 +56,10 @@ public:
 
 	void setGlobalPause(bool pause);
 
+	bool hasMadeChoice();
+
+	void makeChoice(bool);
+
 private:
 	int lastSecond;
 
@@ -83,4 +87,5 @@ private:
 
 	bool globalPause;
 
+	bool madeChoice;
 };

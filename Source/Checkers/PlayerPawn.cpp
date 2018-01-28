@@ -220,13 +220,19 @@ void APlayerPawn::DespawnCard() {
 }
 
 void APlayerPawn::declineCard() {
-	endTurnDelayed();
+	if (!(GameManager->hasMadeChoice())) {
+		GameManager->makeChoice(true);
+		endTurnDelayed();
+	}
 }
 
-void APlayerPawn::RotateCard() {
-	rotateCard = true;
-	ry = 0;
-	startTimer();
+void APlayerPawn::AcceptCard() {
+	if (!(GameManager->hasMadeChoice())) {
+		GameManager->makeChoice(true);
+		rotateCard = true;
+		ry = 0;
+		startTimer();
+	}
 }
 
 void APlayerPawn::SelectCard() {

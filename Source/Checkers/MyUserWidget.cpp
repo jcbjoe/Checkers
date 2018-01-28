@@ -74,7 +74,7 @@ void UMyUserWidget::spawnCardText() {
 }
 
 void UMyUserWidget::acceptCard() {
-	playerPawn->RotateCard();
+	playerPawn->AcceptCard();
 
 }
 

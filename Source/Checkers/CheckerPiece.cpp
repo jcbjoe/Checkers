@@ -18,7 +18,7 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 	spear_ = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("Spear"));
 	spear_->SetStaticMesh(spearMesh.Object);
 
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> pawnMesh(TEXT("SkeletalMesh'/Game/Models/Pawns/Normal/Animation/Pawn_Animation.Pawn_Animation'"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> pawnMesh(TEXT("SkeletalMesh'/Game/Models/Pawns/Normal/Animation/PawnSkeletal.PawnSkeletal'"));
 
 	checkerPiecePawnMesh_ = CreateDefaultSubobject <USkeletalMeshComponent>(TEXT("Pawn"));
 
@@ -41,7 +41,7 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 	sword_ = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("Sword"));
 	sword_->SetStaticMesh(swordrMesh.Object);
 
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> kingMesh(TEXT("SkeletalMesh'/Game/Models/Pawns/King/Animation/Knight_Anim.Knight_Anim'"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> kingMesh(TEXT("SkeletalMesh'/Game/Models/Pawns/King/Animation/KingSkeletal.KingSkeletal'"));
 
 	checkerPieceKingMesh_ = CreateDefaultSubobject <USkeletalMeshComponent>(TEXT("Knight"));
 
@@ -56,11 +56,8 @@ ACheckerPiece::ACheckerPiece(): x(0),y(0),player(0),king(false)
 
 	checkerPiecePawnMesh_->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	checkerPieceKingMesh_->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//spear_->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	sword_->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	
-
-
+	spear_->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	initEvents();
 
@@ -199,10 +196,52 @@ void ACheckerPiece::setXY(int passedX, int passedY) {
 
 void ACheckerPiece::makeKing() {
 	king = true;
+
+	UDestructibleMesh* DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/Normal/together_DM.together_DM")));
+	ADestructibleActor* DestructibleActor;
+	FVector loc = FVector(this->GetActorTransform().GetTranslation().X, this->GetActorTransform().GetTranslation().Y, this->GetActorTransform().GetTranslation().Z + 0.017517);
+	if (player == 0) {
+		DestructibleActor = GetWorld()->SpawnActor<ADestructibleActor>(ADestructibleActor::StaticClass(), loc, FRotator(0, this->GetActorRotation().Yaw, 0));
+	}
+	else {
+		DestructibleActor = GetWorld()->SpawnActor<ADestructibleActor>(ADestructibleActor::StaticClass(), loc, FRotator(0, this->GetActorRotation().Yaw, 0));
+	}
+
+	if (player == 1) {
+		DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player1Material_);
+	}
+	else {
+		DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player2Material_);
+
+	}
+
+	DestructibleActor->SetActorScale3D(FVector(0.01255, 0.01255, 0.01255));
+	DestructibleActor->GetDestructibleComponent()->SetDestructibleMesh(DestructibleMesh);
+
+
 	checkerPiecePawnMesh_->SetVisibility(false);
 	spear_->SetVisibility(false);
 	checkerPieceKingMesh_->SetVisibility(true);
 	sword_->SetVisibility(true);
+	spear_->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	sword_->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	FTimerHandle UnusedHandle;
+	FTimerDelegate TimerDel;
+	TimerDel.BindUFunction(this, FName("moveDestructible"), DestructibleActor);
+
+	GetWorldTimerManager().SetTimer(UnusedHandle, TimerDel, 0.1, false);
+}
+
+void ACheckerPiece::moveDestructible(ADestructibleActor* mesh) {
+	FVector newLoc = FVector(mesh->GetActorLocation().X, mesh->GetActorLocation().Y, mesh->GetActorLocation().Z + 0.25);
+	mesh->SetActorLocation(newLoc);
+
+	FTimerHandle UnusedHandle;
+	FTimerDelegate TimerDel;
+	TimerDel.BindUFunction(this, FName("removeDebris"), mesh);
+
+	GetWorldTimerManager().SetTimer(UnusedHandle, TimerDel, 5, false);
 }
 
 void ACheckerPiece::taken() {
@@ -212,7 +251,7 @@ void ACheckerPiece::taken() {
 
 	UDestructibleMesh* DestructibleMesh;
 	if (isKing()) {
-		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/King/king_gamemesh_DM.king_gamemesh_DM")));
+		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/King/TogetherKing.TogetherKing")));
 	}
 	else {
 		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/Normal/together_DM.together_DM")));
@@ -254,7 +293,7 @@ void ACheckerPiece::taken() {
 	FTimerDelegate TimerDel;
 	TimerDel.BindUFunction(this, FName("removeDebris"), DestructibleActor);
 
-	//GetWorldTimerManager().SetTimer(UnusedHandle, TimerDel, 5, false);
+	GetWorldTimerManager().SetTimer(UnusedHandle, TimerDel, 5, false);
 }
 
 void ACheckerPiece::removeDebris(ADestructibleActor* mesh) {

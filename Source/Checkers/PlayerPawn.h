@@ -73,7 +73,7 @@ public:
 	void RotateLeft();
 	void SpawnCard();
 	void DespawnCard();
-	void RotateCard();
+	void AcceptCard();
 	UPROPERTY(EditAnywhere)
 	UPointLightComponent* MyLight;
 

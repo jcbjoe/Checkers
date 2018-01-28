@@ -9,6 +9,6 @@ UMyAnimInstance::UMyAnimInstance(const FObjectInitializer& ObjectInitializer)
 
 }
 
-void UMyAnimInstance::setHit(bool) {
-	hitting = true;
+void UMyAnimInstance::setHit(bool hittingHere) {
+	hitting = hittingHere;
 }

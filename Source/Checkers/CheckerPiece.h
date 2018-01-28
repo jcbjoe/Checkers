@@ -102,5 +102,7 @@ private:
 	void initMaterials();
 
 	UFUNCTION()
+	void moveDestructible(ADestructibleActor* mesh);
+	UFUNCTION()
 	void removeDebris(ADestructibleActor* mesh);
 };
