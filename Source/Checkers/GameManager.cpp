@@ -111,7 +111,6 @@ int AGameManager::getOtherPlayer() {
 
 void AGameManager::PauseTimer(bool pause) {
 	paused = pause;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("This is an on screen message!"));
 }
 
 void AGameManager::setGlobalPause(bool pause) {
