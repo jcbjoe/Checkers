@@ -113,5 +113,9 @@ private:
 	bool waiting;
 	int seconds;
 	int lastSecond;
-	bool moving;
+	bool moving1;
+	bool moving2;
+	FRotator originalRotPieceMoving;
+
+	void endTheMovingPhase();
 };

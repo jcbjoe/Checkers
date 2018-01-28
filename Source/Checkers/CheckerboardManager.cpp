@@ -4,7 +4,7 @@
 #include "GameManager.h"
 
 // Sets default values
-ACheckerboardManager::ACheckerboardManager() : selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr), takingPiece(false), hasTakenPiece(false), hitting(false), rotating(false), waiting(false), seconds(0), moving(false)
+ACheckerboardManager::ACheckerboardManager() : selectedX(0), selectedY(0), pieceMoving(false), proposedPieceToTake(nullptr), takingPiece(false), hasTakenPiece(false), hitting(false), rotating(false), waiting(false), seconds(0), moving1(false),moving2(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -38,19 +38,45 @@ void ACheckerboardManager::Tick(float DeltaTime)
 			float xDistance = pieceToMoveTo->GetActorLocation().X - checkerPieceMoving->GetActorLocation().X;
 			float yDistance = pieceToMoveTo->GetActorLocation().Y - checkerPieceMoving->GetActorLocation().Y;
 			float distance = FGenericPlatformMath::Sqrt(xDistance * xDistance + yDistance * yDistance);
-			if (distance > 0.1) {
-				if (takingPiece) {
+			if (takingPiece) {
+				if (distance > 0.1) {
 					if (rotating) {
-						FRotator look = UKismetMathLibrary::FindLookAtRotation(checkerPieceMoving->GetActorLocation(), pieceTaking->GetActorLocation());
-						FRotator test = FRotator(look.Pitch, look.Yaw - 90, look.Roll);
-						FRotator Rotation = FMath::RInterpTo(checkerPieceMoving->GetActorRotation(), test, DeltaTime, 2.0);
-						checkerPieceMoving->SetActorRotation(Rotation);
-						if ((test.Yaw - Rotation.Yaw) < 0.5 && (test.Yaw - Rotation.Yaw) > -0.5) {
-							hitting = true;
+						
+						FRotator lookTaker = UKismetMathLibrary::FindLookAtRotation(checkerPieceMoving->GetActorLocation(), pieceTaking->GetActorLocation());
+						FRotator lookEnemy = UKismetMathLibrary::FindLookAtRotation(pieceTaking->GetActorLocation(), checkerPieceMoving->GetActorLocation());
+						FRotator lookTakerAdjust = FRotator(lookTaker.Pitch, lookTaker.Yaw - 90, lookTaker.Roll);
+						FRotator lookEnemyAdjust = FRotator(lookEnemy.Pitch, lookEnemy.Yaw - 90, lookEnemy.Roll);
+						FRotator RotationForTaker = FMath::RInterpTo(checkerPieceMoving->GetActorRotation(), lookTakerAdjust, DeltaTime, 2.0);
+						FRotator RotationForEnemy = FMath::RInterpTo(pieceTaking->GetActorRotation(), lookEnemyAdjust, DeltaTime, 2.0);
+						checkerPieceMoving->SetActorRotation(RotationForTaker);
+						pieceTaking->SetActorRotation(RotationForEnemy);
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Wat: %f"), (lookTakerAdjust.Yaw - RotationForTaker.Yaw)));
+
+						if (((lookTakerAdjust.Yaw - RotationForTaker.Yaw) < 0.5 && (lookTakerAdjust.Yaw - RotationForTaker.Yaw) > -0.5) || ((lookTakerAdjust.Yaw - RotationForTaker.Yaw) < -359.5 && (lookTakerAdjust.Yaw - RotationForTaker.Yaw) > -360)) {
+							moving1 = true;
 							rotating = false;
+							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("2"));
+						}
+					}
+					if (moving1) {
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("3"));
+						if (distance < 25.5) {
+							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("4"));
+							moving1 = false;
+							hitting = true;
+						} else {
+							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("5"));
+							checkerPieceMoving->SetActorLocation(
+								FVector(
+									checkerPieceMoving->GetActorLocation().X + xDistance * 0.01,
+									checkerPieceMoving->GetActorLocation().Y + yDistance * 0.01,
+									checkerPieceMoving->GetActorLocation().Z
+								)
+							);
 						}
 					}
 					if (hitting) {
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("6"));
 						takePiece(pieceTaking);
 						checkerPieceMoving->setAnimHit(true);
 						hitting = false;
@@ -65,11 +91,12 @@ void ACheckerboardManager::Tick(float DeltaTime)
 							seconds++;
 						}
 						if (seconds == 2) {
+							checkerPieceMoving->setAnimHit(false);
 							waiting = false;
-							moving = true;
+							moving2 = true;
 						}
 					}
-					if (moving) {
+					if (moving2) {
 						checkerPieceMoving->SetActorLocation(
 							FVector(
 								checkerPieceMoving->GetActorLocation().X + xDistance * easingAmount,
@@ -79,8 +106,42 @@ void ACheckerboardManager::Tick(float DeltaTime)
 						);
 
 					}
+				} else {
+					if (moving2) {
+						FRotator RotationForTaker = FMath::RInterpTo(checkerPieceMoving->GetActorRotation(), originalRotPieceMoving, DeltaTime, 2.0);
+						if ((checkerPieceMoving->GetActorRotation().Yaw - originalRotPieceMoving.Yaw) > 0.1) {
+							checkerPieceMoving->SetActorRotation(RotationForTaker);
+							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("dif: %f"), (checkerPieceMoving->GetActorRotation().Yaw - originalRotPieceMoving.Yaw)));
+						} else {
+							moving2 = false;
+						}
+					} else {
+
+
+						endTheMovingPhase();
+
+						if (!(GameManager->isInCardMenu())) {
+							vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(pieceToMoveTo);
+							if (isThereAPieceCanTake(possibleMovesForSelectedGrid)) {
+								showPossibleMoves(pieceToMoveTo);
+								selectedX = pieceToMoveTo->getX();
+								selectedY = pieceToMoveTo->getY();
+								pieceToMoveTo->setSelected(true);
+
+								possibleMovesTaking = possibleMovesForSelectedGrid;
+							}
+							else {
+								removePossibleMoves();
+
+								endTurnManager();
+
+								takingPiece = false;
+							}
+						}
+					}
 				}
-				else {
+			} else {
+				if (distance > 0.1) {
 					checkerPieceMoving->SetActorLocation(
 						FVector(
 							checkerPieceMoving->GetActorLocation().X + xDistance * easingAmount,
@@ -88,44 +149,8 @@ void ACheckerboardManager::Tick(float DeltaTime)
 							checkerPieceMoving->GetActorLocation().Z
 						)
 					);
-				}
-			} else {
-				moving = false;
-				checkerPieceArray[checkerPieceMoving->getX()][checkerPieceMoving->getY()] = nullptr;
-				checkerPieceMoving->setXY(pieceToMoveTo->getX(), pieceToMoveTo->getY());
-				checkerPieceArray[checkerPieceMoving->getX()][checkerPieceMoving->getY()] = checkerPieceMoving;
-				pieceMoving = false;
-				if (!checkerPieceMoving->isKing()) {
-					int player = checkerPieceMoving->getPlayer();
-					//--- Moving Right
-					if (player == 0) {
-						if (checkerPieceMoving->getX() == 0) {
-							checkerPieceMoving->makeKing();
-						}
-					}
-					//--- Moving Left
-					if (player == 1) {
-						if (checkerPieceMoving->getX() == (GRID_SIZE - 1)) {
-							checkerPieceMoving->makeKing();
-						}
-					}
-				}
-				if (takingPiece && !(GameManager->isInCardMenu())) {
-					vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(pieceToMoveTo);
-					if (isThereAPieceCanTake(possibleMovesForSelectedGrid)) {
-						showPossibleMoves(pieceToMoveTo);
-						selectedX = pieceToMoveTo->getX();
-						selectedY = pieceToMoveTo->getY();
-						pieceToMoveTo->setSelected(true);
-
-						possibleMovesTaking = possibleMovesForSelectedGrid;
-					} else {
-						removePossibleMoves();
-
-						endTurnManager();
-
-						takingPiece = false;
-					}
+				} else {
+					endTheMovingPhase();
 				}
 			}
 		}
@@ -195,12 +220,13 @@ void ACheckerboardManager::onClicked(int x, int y) {
 
 									//--- Grab the piece we are taking and remove it.
 									pieceTaking = getPieceTaking(newSelected, possibleMovesForSelectedGrid);
-
 									rotating = true;
+									originalRotPieceMoving = checkerPieceMoving->GetActorRotation();
 
 									//--- Get rid of highlighted moves (dont need anymore)
 									removePossibleMoves();
 									//--- lets move but dont end turn yet!
+									
 									takingPiece = true;
 									pieceMoving = true;
 								} else {
@@ -619,4 +645,26 @@ vector<ACheckerPiece*> ACheckerboardManager::findNotKing(int player) {
 		}
 	}
 	return kings;
+}
+
+void ACheckerboardManager::endTheMovingPhase() {
+	checkerPieceArray[checkerPieceMoving->getX()][checkerPieceMoving->getY()] = nullptr;
+	checkerPieceMoving->setXY(pieceToMoveTo->getX(), pieceToMoveTo->getY());
+	checkerPieceArray[checkerPieceMoving->getX()][checkerPieceMoving->getY()] = checkerPieceMoving;
+	pieceMoving = false;
+	if (!checkerPieceMoving->isKing()) {
+		int player = checkerPieceMoving->getPlayer();
+		//--- Moving Right
+		if (player == 0) {
+			if (checkerPieceMoving->getX() == 0) {
+				checkerPieceMoving->makeKing();
+			}
+		}
+		//--- Moving Left
+		if (player == 1) {
+			if (checkerPieceMoving->getX() == (GRID_SIZE - 1)) {
+				checkerPieceMoving->makeKing();
+			}
+		}
+	}
 }
