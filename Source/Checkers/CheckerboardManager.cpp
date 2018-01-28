@@ -289,6 +289,7 @@ vector<vector<AGridPiece*>> ACheckerboardManager::findPossibleMoves(AGridPiece* 
 	//--- Check which player is moving
 	int selectedGridPieceX = gridPiece->getX();
 	int selectedGridPieceY = gridPiece->getY();
+	
 	if (player == 0 || isKing) {
 		//--- So we are on the Right side going LEFT! So we need to go right so x  -1
 		//--- This is the BOTTOM highlight
@@ -368,8 +369,7 @@ vector<vector<AGridPiece*>> ACheckerboardManager::findPossibleMoves(AGridPiece* 
 						int JumpoverY = selectedGridPieceY - 2;
 
 						//--- Make sure our y is not less than 0 (off the board)
-						if (JumpoverY >= 0 && JumpOverX < (GRID_SIZE - 1)) {
-
+						if (JumpoverY >= 0 && JumpOverX <= (GRID_SIZE - 1)) {
 							AGridPiece* JumpOverMove = getGridPieceAt(JumpOverX, JumpoverY);
 
 							//--- Is there a piece there?
@@ -395,8 +395,7 @@ vector<vector<AGridPiece*>> ACheckerboardManager::findPossibleMoves(AGridPiece* 
 						int JumpoverY = selectedGridPieceY + 2;
 
 						//--- Make sure our Y is not off the top of the board
-						if (JumpoverY <= (GRID_SIZE - 1) && JumpOverX < (GRID_SIZE - 1)) {
-
+						if (JumpoverY <= (GRID_SIZE - 1) && JumpOverX <= (GRID_SIZE - 1)) {
 							AGridPiece* JumpOverMove = getGridPieceAt(JumpOverX, JumpoverY);
 
 							//--- Is there a piece there?
