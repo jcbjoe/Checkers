@@ -51,8 +51,6 @@ public:
 
 	vector<ACheckerPiece*> findNotKing(int player);
 
-	void removeSelection();
-
 private: 
 	static const int GRID_SIZE = 8;
 
@@ -120,6 +118,4 @@ private:
 	FRotator originalRotPieceMoving;
 
 	void endTheMovingPhase();
-
-	bool isThereAPieceThatCanTake();
 };

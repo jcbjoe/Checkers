@@ -321,16 +321,19 @@ void APlayerPawn::executeCardAbility() {
 			notKings = GameManager->getCheckerboardManager()->findNotKing(GameManager->getCurrentPlayer());
 			random = rand() % notKings.size();
 			notKings.at(random)->makeKing();
+			GameManager->getUI()->setAlertMessage("You have been given a king!", 5);
 			break;
 		//ExtraMove
 		case 2:
 			extraMove = true;
+			GameManager->getUI()->setAlertMessage("You have been given an extra turn!", 5);
 			GameManager->resetTimer();
 			break;
 		//Enemy looses random piece
 		case 3:
 			piece = GameManager->getCheckerboardManager()->randomPiece(enemy);
 			GameManager->getCheckerboardManager()->takePieceRemote(piece);
+			GameManager->getUI()->setAlertMessage("A Remove a random enemy piece!", 5);
 			break;
 	//Bad
 		//Give oponent king
@@ -338,6 +341,7 @@ void APlayerPawn::executeCardAbility() {
 			notKings = GameManager->getCheckerboardManager()->findNotKing(GameManager->getOtherPlayer());
 			random = rand() % notKings.size();
 			notKings.at(random)->makeKing();
+			GameManager->getUI()->setAlertMessage("The opponent has been given a king!", 5);
 			break;
 		//Miss next turn
 		case 5:
@@ -346,11 +350,13 @@ void APlayerPawn::executeCardAbility() {
 			} else {
 				GameManager->setPlayer1MissTurn(true);
 			}
+			GameManager->getUI()->setAlertMessage("Miss your next turn!", 5);
 			break;
 		//Lose random piece
 		case 6:
 			piece = GameManager->getCheckerboardManager()->randomPiece(currentPlayer);
 			GameManager->getCheckerboardManager()->takePieceRemote(piece);
+			GameManager->getUI()->setAlertMessage("Loose a random piece!", 5);
 			break;
 	}
 }

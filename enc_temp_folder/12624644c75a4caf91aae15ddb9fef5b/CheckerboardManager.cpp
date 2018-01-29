@@ -248,18 +248,14 @@ void ACheckerboardManager::onClicked(int x, int y) {
 								}
 							//--- If we cannot take the piece we just move normally and end our turn
 							} else {
-								if (isThereAPieceThatCanTake()) {
-									GameManager->getUI()->setAlertMessage(FString("You have to take a piece if its avaliable!"), 5);
-								} else {
-									oldSelectedGridPiece->setSelected(false);
-									checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
-									pieceToMoveTo = newSelected;
-									pieceMoving = true;
+								oldSelectedGridPiece->setSelected(false);
+								checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
+								pieceToMoveTo = newSelected;
+								pieceMoving = true;
 
-									removePossibleMoves();
+								removePossibleMoves();
 
-									endTurnManager();
-								}
+								endTurnManager();
 
 							}
 						}
@@ -685,32 +681,4 @@ void ACheckerboardManager::endTheMovingPhase() {
 			}
 		}
 	}
-}
-
-bool ACheckerboardManager::isThereAPieceThatCanTake() {
-	bool returnVar = false;
-	for (int x = 0; x < GRID_SIZE; x++) {
-		for (int y = 0; y < GRID_SIZE; y++) {
-			ACheckerPiece* piece = getCheckerPieceOnTop(gridPieceArray[x][y]);
-			if (piece != nullptr) {
-				if (piece->getPlayer() == GameManager->getCurrentPlayer()) {
-					vector<vector<AGridPiece*>> possibleMovesForSelectedGrid = findPossibleMoves(gridPieceArray[x][y]);
-					if (isThereAPieceCanTake(possibleMovesForSelectedGrid)) {
-						returnVar = true;
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	return returnVar;
-}
-
-void ACheckerboardManager::removeSelection() {
-
-	AGridPiece* oldSelectedGridPiece = getGridPieceAt(selectedX, selectedY);
-	oldSelectedGridPiece->setSelected(false);
-	removePossibleMoves();
-
 }

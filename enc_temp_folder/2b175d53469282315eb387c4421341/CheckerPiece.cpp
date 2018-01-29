@@ -288,8 +288,6 @@ void ACheckerPiece::taken() {
 
 	checkerPiecePawnMesh_->SetVisibility(false);
 	spear_->SetVisibility(false);
-	checkerPieceKingMesh_->SetVisibility(false);
-	sword_->SetVisibility(false);
 
 	FTimerHandle UnusedHandle;
 	FTimerDelegate TimerDel;
@@ -300,7 +298,6 @@ void ACheckerPiece::taken() {
 
 void ACheckerPiece::removeDebris(ADestructibleActor* mesh) {
 	mesh->Destroy();
-	this->Destroy();
 }
 
 void ACheckerPiece::setAnimHit(bool hit) {

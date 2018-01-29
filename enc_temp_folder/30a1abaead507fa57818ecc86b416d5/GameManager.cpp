@@ -92,9 +92,7 @@ void AGameManager::endTurn() {
 			playersTurn = 0;
 			getUI()->setPlayer2Time(FString::FromInt(0));
 		}
-		checkerBoardManager->removeSelection();
 		startTurn();
-		getUI()->setAlertMessage(FString("You have run out of time!"), 5);
 	}
 	else
 		endGame();
