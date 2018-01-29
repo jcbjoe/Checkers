@@ -50,7 +50,6 @@ void ACheckerboardManager::Tick(float DeltaTime)
 						FRotator RotationForEnemy = FMath::RInterpTo(pieceTaking->GetActorRotation(), lookEnemyAdjust, DeltaTime, 2.0);
 						checkerPieceMoving->SetActorRotation(RotationForTaker);
 						pieceTaking->SetActorRotation(RotationForEnemy);
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("TakeAway: %f"), (lookTakerAdjust.Yaw - RotationForTaker.Yaw)));
 						if (((lookTakerAdjust.Yaw - RotationForTaker.Yaw) < 0.5 && (lookTakerAdjust.Yaw - RotationForTaker.Yaw) > -0.5) || ((lookTakerAdjust.Yaw - RotationForTaker.Yaw) < -359.5 && (lookTakerAdjust.Yaw - RotationForTaker.Yaw) > -360.5)) {
 							moving1 = true;
 							rotating = false;

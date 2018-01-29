@@ -91,4 +91,6 @@ private:
 	void executeCardAbility();
 
 	bool extraMove;
+
+	void toggleHUD();
 };

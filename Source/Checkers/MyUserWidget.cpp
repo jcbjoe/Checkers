@@ -7,7 +7,7 @@
 void UMyUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	hideHUD = false;
 	playerPawn = (APlayerPawn*)((AMyPlayerController*)(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetPawn());
 }
 
@@ -128,4 +128,8 @@ bool UMyUserWidget::isHudAvaliable() {
 
 void UMyUserWidget::setHidden(bool hide) {
 	hidden = hide;
+}
+
+void UMyUserWidget::toggleHUD() {
+	hideHUD = !hideHUD;
 }

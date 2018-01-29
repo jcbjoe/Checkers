@@ -178,7 +178,14 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	InputComponent->BindAction("RotateRight", IE_Pressed, this, &APlayerPawn::RotateRight);
-	InputComponent->BindAction("RotateLeft", IE_Pressed, this, &APlayerPawn::RotateLeft);
+	InputComponent->BindAction("RotateLeft", IE_Pressed, this, &APlayerPawn::RotateLeft); 
+	InputComponent->BindAction("hideHUD", IE_Pressed, this, &APlayerPawn::toggleHUD);
+}
+
+void APlayerPawn::toggleHUD(){
+	#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
+	GameManager->getUI()->toggleHUD();
+	#endif
 }
 
 void APlayerPawn::RotateRight() {

@@ -75,6 +75,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool playerOneWins;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
+	bool hideHUD;
+
 	void setPlayer1Time(FString time);
 
 	void setPlayer2Time(FString time);
@@ -111,6 +114,8 @@ public:
 	void turnOffAlert();
 
 	void setHidden(bool);
+
+	void toggleHUD();
 
 private:
 	bool isHudAvaliable();
