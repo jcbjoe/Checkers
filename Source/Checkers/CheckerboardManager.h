@@ -47,7 +47,7 @@ public:
 
 	void takePieceRemote(ACheckerPiece*);
 
-	bool piecesRemaining();
+	int piecesRemaining();
 
 	vector<ACheckerPiece*> findNotKing(int player);
 

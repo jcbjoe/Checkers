@@ -141,6 +141,7 @@ void ACheckerboardManager::Tick(float DeltaTime)
 								possibleMovesTaking = possibleMovesForSelectedGrid;
 
 								GameManager->PauseTimer(false);
+								GameManager->getUI()->showDoubleJumpNotice();
 							}
 							else {
 								removePossibleMoves();
@@ -630,22 +631,19 @@ void ACheckerboardManager::endTurnManager() {
 
 }
 
-bool ACheckerboardManager::piecesRemaining() {
-	vector<ACheckerPiece*> pieces;
+int ACheckerboardManager::piecesRemaining() {
+	int count = 0;
 	for (int x = 0; x < GRID_SIZE; x++) {
 		for (int y = 0; y < GRID_SIZE; y++) {
 			if (hasPieceOnTop(gridPieceArray[x][y])) {
 				ACheckerPiece* piece = checkerPieceArray[x][y];
 				if (piece->getPlayer() == GameManager->getOtherPlayer()) {
-					pieces.push_back(piece);
+					count++;
 				}
 			}
 		}
 	}
-	if (pieces.size() > 0)
-		return true;
-	else
-		return false;
+	return count;
 }
 
 vector<ACheckerPiece*> ACheckerboardManager::findNotKing(int player) {

@@ -270,6 +270,7 @@ void ACheckerPiece::taken() {
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(2, player1MaterialKingBody_);
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player1MaterialKingExtra_);
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(1, player1MaterialKingExtra_);
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(3, player1MaterialKingBody_);
 		} else {
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player1Material_);
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(1, player1Material_);
@@ -279,6 +280,7 @@ void ACheckerPiece::taken() {
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(2, player2MaterialKingBody_);
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player2MaterialKingExtra_);
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(1, player2MaterialKingExtra_);
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(3, player2MaterialKingBody_);
 		} else {
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player2Material_);
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(1, player2Material_);

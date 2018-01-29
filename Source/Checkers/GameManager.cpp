@@ -21,7 +21,6 @@ void AGameManager::BeginPlay()
 
 	checkerBoardManager->initManager(this);
 
-
 	playersTurn = FMath::RandRange(0, 1);
 
 	startTurn();
@@ -54,9 +53,9 @@ void AGameManager::tickTimer() {
 		seconds++;
 
 		if (playerTimerOn && !paused) {
-			if (playerTimerCurrentSeconds > 30) {
+			if (playerTimerCurrentSeconds > 30 && (checkerBoardManager->piecesRemaining() != 1)) {
 				playerTimerOn = false;
-				getUI()->setAlertMessage(FString("You have run out of time!"), 5);
+				getUI()->showRunOutOfTime();
 				endTurn();
 			}
 			if (playersTurn == 0)
@@ -83,7 +82,8 @@ void AGameManager::startTurn() {
 }
 
 void AGameManager::endTurn() {
-	if (checkerBoardManager->piecesRemaining()) {
+	int piecesRemaining = checkerBoardManager->piecesRemaining();
+	if (piecesRemaining > 0) {
 		if (playersTurn == 0) {
 			playersTurn = 1;
 			getUI()->setPlayer1Time(FString::FromInt(0));

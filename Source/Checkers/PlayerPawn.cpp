@@ -293,9 +293,9 @@ void APlayerPawn::setGameManager(AGameManager* man) {
 }
 
 void APlayerPawn::startTimer() {
-
+	extraMove = false;
 	executeCardAbility();
-
+	
 	if (extraMove) {
 		GameManager->PauseTimer(false);
 		GameManager->setIsInCardMenu(false);

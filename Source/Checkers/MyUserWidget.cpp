@@ -8,6 +8,8 @@ void UMyUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	hideHUD = false;
+	doubleJumpShow = false;
+	runOutOfTimeShow = false;
 	playerPawn = (APlayerPawn*)((AMyPlayerController*)(UGameplayStatics::GetPlayerController(GetWorld(), 0))->GetPawn());
 }
 
@@ -132,4 +134,26 @@ void UMyUserWidget::setHidden(bool hide) {
 
 void UMyUserWidget::toggleHUD() {
 	hideHUD = !hideHUD;
+}
+
+void UMyUserWidget::showDoubleJumpNotice() {
+	doubleJumpShow = true;
+
+	FTimerHandle UnusedHandle;
+	playerPawn->GetWorldTimerManager().SetTimer(UnusedHandle, this, &UMyUserWidget::hideDoubleJumpNotice, 3.0, false);
+}
+
+void UMyUserWidget::hideDoubleJumpNotice() {
+	doubleJumpShow = false;
+}
+
+void UMyUserWidget::showRunOutOfTime() {
+	runOutOfTimeShow = true;
+
+	FTimerHandle UnusedHandle;
+	playerPawn->GetWorldTimerManager().SetTimer(UnusedHandle, this, &UMyUserWidget::hideRunOutOfTime, 3.0, false);
+}
+
+void UMyUserWidget::hideRunOutOfTime() {
+	runOutOfTimeShow = false;
 }

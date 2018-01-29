@@ -78,6 +78,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool hideHUD;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
+	bool doubleJumpShow;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
+	bool runOutOfTimeShow;
+
 	void setPlayer1Time(FString time);
 
 	void setPlayer2Time(FString time);
@@ -117,6 +123,12 @@ public:
 
 	void toggleHUD();
 
+	void showDoubleJumpNotice();
+	void showRunOutOfTime();
 private:
+
 	bool isHudAvaliable();
+
+	void hideDoubleJumpNotice();
+	void hideRunOutOfTime();
 };
