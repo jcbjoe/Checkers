@@ -56,7 +56,7 @@ void AGameManager::tickTimer() {
 		if (playerTimerOn && !paused) {
 			if (playerTimerCurrentSeconds > 30) {
 				playerTimerOn = false;
-				//getUI()->despawnCard();
+				getUI()->setAlertMessage(FString("You have run out of time!"), 5);
 				endTurn();
 			}
 			if (playersTurn == 0)
@@ -94,7 +94,6 @@ void AGameManager::endTurn() {
 		}
 		checkerBoardManager->removeSelection();
 		startTurn();
-		getUI()->setAlertMessage(FString("You have run out of time!"), 5);
 	}
 	else
 		endGame();
