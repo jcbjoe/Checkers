@@ -222,6 +222,7 @@ void APlayerPawn::DespawnCard() {
 void APlayerPawn::declineCard() {
 	if (!(GameManager->hasMadeChoice())) {
 		GameManager->makeChoice(true);
+		DespawnCard();
 		endTurnDelayed();
 	}
 }
