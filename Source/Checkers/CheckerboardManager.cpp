@@ -50,8 +50,8 @@ void ACheckerboardManager::Tick(float DeltaTime)
 						FRotator RotationForEnemy = FMath::RInterpTo(pieceTaking->GetActorRotation(), lookEnemyAdjust, DeltaTime, 2.0);
 						checkerPieceMoving->SetActorRotation(RotationForTaker);
 						pieceTaking->SetActorRotation(RotationForEnemy);
-
-						if (((lookTakerAdjust.Yaw - RotationForTaker.Yaw) < 0.5 && (lookTakerAdjust.Yaw - RotationForTaker.Yaw) > -0.5) || ((lookTakerAdjust.Yaw - RotationForTaker.Yaw) < -359.5 && (lookTakerAdjust.Yaw - RotationForTaker.Yaw) > -360)) {
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("TakeAway: %f"), (lookTakerAdjust.Yaw - RotationForTaker.Yaw)));
+						if (((lookTakerAdjust.Yaw - RotationForTaker.Yaw) < 0.5 && (lookTakerAdjust.Yaw - RotationForTaker.Yaw) > -0.5) || ((lookTakerAdjust.Yaw - RotationForTaker.Yaw) < -359.5 && (lookTakerAdjust.Yaw - RotationForTaker.Yaw) > -360.5)) {
 							moving1 = true;
 							rotating = false;
 						}
@@ -244,12 +244,12 @@ void ACheckerboardManager::onClicked(int x, int y) {
 									takingPiece = true;
 									pieceMoving = true;
 								} else {
-									GameManager->getUI()->setAlertMessage(FString("There is a piece you can take, You must take it!"), 5);
+									GameManager->getUI()->setMustTakePiece(true);
 								}
 							//--- If we cannot take the piece we just move normally and end our turn
 							} else {
 								if (isThereAPieceThatCanTake()) {
-									GameManager->getUI()->setAlertMessage(FString("You have to take a piece if its avaliable!"), 5);
+									GameManager->getUI()->setMustTakePiece(true);
 								} else {
 									oldSelectedGridPiece->setSelected(false);
 									checkerPieceMoving = getCheckerPieceOnTop(oldSelectedGridPiece);
@@ -269,7 +269,7 @@ void ACheckerboardManager::onClicked(int x, int y) {
 			//	GameManager->getUI()->setAlertMessage(FString("There is another piece that can be taken, You must take that by default!"), 5);
 			//}
 		} else {
-			GameManager->getUI()->setAlertMessage(FString("You can only move the piece that has been moved!"), 5);
+			GameManager->getUI()->setCanOnlyMovePiece(true);
 		}
 	}
 }

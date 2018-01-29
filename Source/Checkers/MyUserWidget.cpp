@@ -95,6 +95,18 @@ void UMyUserWidget::setShowNotYourPiece(bool show) {
 	}
 }
 
+void UMyUserWidget::setMustTakePiece(bool show) {
+	if (isHudAvaliable()) {
+		showMustTakePiece = show;
+	}
+}
+
+void UMyUserWidget::setCanOnlyMovePiece(bool show) {
+	if (isHudAvaliable()) {
+		showCanOnlyMovePiece = show;
+	}
+}
+
 void UMyUserWidget::showEnd(int player) {
 	if (isHudAvaliable()) {
 
@@ -112,4 +124,8 @@ bool UMyUserWidget::isHudAvaliable() {
 	} else {
 		return true;
 	}
+}
+
+void UMyUserWidget::setHidden(bool hide) {
+	hidden = hide;
 }

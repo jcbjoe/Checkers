@@ -251,7 +251,7 @@ void ACheckerPiece::taken() {
 
 	UDestructibleMesh* DestructibleMesh;
 	if (isKing()) {
-		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/King/TogetherKing.TogetherKing")));
+		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/King/TogetherKing_DM.TogetherKing_DM")));
 	}
 	else {
 		DestructibleMesh = Cast<UDestructibleMesh>(StaticLoadObject(UDestructibleMesh::StaticClass(), NULL, TEXT("/Game/Models/Pawns/Normal/together_DM.together_DM")));
@@ -272,6 +272,7 @@ void ACheckerPiece::taken() {
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(1, player1MaterialKingExtra_);
 		} else {
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player1Material_);
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(1, player1Material_);
 		}
 	} else {
 		if (isKing()) {
@@ -280,6 +281,7 @@ void ACheckerPiece::taken() {
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(1, player2MaterialKingExtra_);
 		} else {
 			DestructibleActor->GetDestructibleComponent()->SetMaterial(0, player2Material_);
+			DestructibleActor->GetDestructibleComponent()->SetMaterial(1, player2Material_);
 		}
 	}
 
@@ -300,7 +302,6 @@ void ACheckerPiece::taken() {
 
 void ACheckerPiece::removeDebris(ADestructibleActor* mesh) {
 	mesh->Destroy();
-	this->Destroy();
 }
 
 void ACheckerPiece::setAnimHit(bool hit) {

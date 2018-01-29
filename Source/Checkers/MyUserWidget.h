@@ -64,7 +64,14 @@ public:
 	bool showNotYourPiece;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
+	bool showMustTakePiece;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
+	bool showCanOnlyMovePiece;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool gameOver;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIBP")
 	bool playerOneWins;
 	
@@ -86,6 +93,10 @@ public:
 
 	void setShowNotYourPiece(bool show);
 
+	void setMustTakePiece(bool show);
+
+	void setCanOnlyMovePiece(bool show);
+
 	UFUNCTION(BlueprintCallable)
 	void despawnCard();
 
@@ -98,6 +109,8 @@ public:
 	void showEnd(int player);
 
 	void turnOffAlert();
+
+	void setHidden(bool);
 
 private:
 	bool isHudAvaliable();

@@ -210,6 +210,7 @@ void APlayerPawn::SpawnCard() {
 
 void APlayerPawn::DespawnCard() {
 	if (spawnedCard == true) {
+		GameManager->getUI()->setHidden(false);
 		despawnCard = true;
 		x = 0;
 		y = 0;
@@ -233,6 +234,8 @@ void APlayerPawn::AcceptCard() {
 		rotateCard = true;
 		ry = 0;
 		startTimer();
+		FTimerHandle UnusedHandle;
+		GetWorldTimerManager().SetTimer(UnusedHandle, this, &APlayerPawn::DespawnCard, 5, false);
 	}
 }
 
